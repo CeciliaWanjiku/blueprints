@@ -388,7 +388,7 @@
   ([code name desc]
    (create code name desc {}))
   ([code name desc {:keys [name-internal desc-internal billed rental fees type price
-                           cost catalogs variants fields properties active archived]
+                           cost catalogs variants fields plan properties active archived]
                     :or   {name-internal name
                            desc-internal desc
                            billed        :service.billed/once
@@ -417,6 +417,7 @@
                       (map-indexed
                        #(assoc %2 :service-field/index %1)
                        fs))
+    :service/plan (when-some [p plan] (td/id p))
     :service/properties (when-some [ps properties]
                           (map td/id ps))
     :service/fees (when-some [fs fees]
