@@ -1,4 +1,4 @@
-(ns blueprints.seed.norms.licenses
+(ns blueprints.datomic.seed.norms.licenses
   (:require [datomic.api :as d]))
 
 (defn add-initial-licenses [part]

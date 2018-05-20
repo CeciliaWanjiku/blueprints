@@ -1,4 +1,4 @@
-(ns blueprints.seed.utils
+(ns blueprints.datomic.seed.utils
   (:require [datomic.api :as d]
             [clj-time.core :as t]
             [clj-time.coerce :as c]))

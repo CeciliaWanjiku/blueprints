@@ -1,5 +1,5 @@
-(ns blueprints.seed-test
-  (:require [blueprints.seed :as seed]
+(ns blueprints.datomic.seed-test
+  (:require [blueprints.datomic.seed :as seed]
             [blueprints.datomic]
             [toolbelt.datomic.test :as tdt :refer [with-conn]]
             [clojure.test :refer :all]

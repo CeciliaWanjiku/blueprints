@@ -1,4 +1,4 @@
-(ns blueprints.seed.norms.properties
+(ns blueprints.datomic.seed.norms.properties
   (:require [datomic.api :as d]
             [toolbelt.core :as tb]))
 

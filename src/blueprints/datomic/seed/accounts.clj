@@ -1,9 +1,7 @@
-(ns blueprints.seed.accounts
-  (:require [blueprints.models.approval :as approval]
-            [blueprints.models.check :as check]
-            [blueprints.seed.utils :as utils :refer [tempid]]
-            [clojure.string :as string]
-            [clj-time.core :as t]))
+(ns blueprints.datomic.seed.accounts
+  (:require [blueprints.datomic.seed.utils :as utils :refer [tempid]]
+            [blueprints.models.approval :as approval]
+            [clojure.string :as string]))
 
 ;; =============================================================================
 ;; Helpers

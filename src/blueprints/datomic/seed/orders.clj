@@ -1,9 +1,8 @@
-(ns blueprints.seed.orders
-  (:require [blueprints.models.order :as order]
-            [blueprints.seed.utils :as utils]
-            [datomic.api :as d]
-            [clojure.string :as string]))
-
+(ns blueprints.datomic.seed.orders
+  (:require [blueprints.datomic.seed.utils :as utils]
+            [blueprints.models.order :as order]
+            [clojure.string :as string]
+            [datomic.api :as d]))
 
 (defn rand-int-to-5
   "random number between 1 and 5 "

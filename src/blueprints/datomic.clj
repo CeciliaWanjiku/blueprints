@@ -20,6 +20,7 @@
             [blueprints.datomic.schema.sync]
             [blueprints.datomic.schema.tag]
             [blueprints.datomic.schema.transaction]
+            [blueprints.datomic.seed :as seed]
             [clojure.string :as string]
             [datomic.api :as d]
             [io.rkn.conformity :as conformity]
@@ -64,7 +65,8 @@
    (conform-schema conn (config/datomic-partition config)))
   ([conn part]
    (conformity/ensure-conforms conn (partition-norms part))
-   (tds/install-schema conn (read-schema))))
+   (tds/install-schema conn (read-schema))
+   (seed/conform conn part)))
 
 
 (defn- scrub-uri [uri]

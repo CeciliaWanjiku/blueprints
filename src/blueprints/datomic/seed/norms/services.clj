@@ -1,7 +1,6 @@
-(ns blueprints.seed.norms.services
-  (:require [datomic.api :as d]
-            [blueprints.models.service :as service]
-            [toolbelt.datomic :as td]))
+(ns blueprints.datomic.seed.norms.services
+  (:require [blueprints.models.service :as service]
+            [datomic.api :as d]))
 
 (defn- ^{:added "1.5.0"} add-initial-services [part]
   [{:db/id          (d/tempid part)
