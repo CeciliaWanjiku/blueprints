@@ -1,11 +1,8 @@
-(ns blueprints.schema.event-test
-  (:require [blueprints.schema :as schema]
-            [toolbelt.datomic.test :as tdt :refer [test-attr with-conn]]
-            [clojure.test :refer :all]
-            [datomic.api :as d]))
+(ns blueprints.schema.datomic.event-test
+  (:require [clojure.test :refer :all]
+            [toolbelt.datomic.test :as tdt :refer [test-attr with-conn]]))
 
-
-(use-fixtures :once (tdt/conn-fixture schema/conform))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
 (deftest schema-conformed?
