@@ -3,11 +3,10 @@
             [clojure.test :refer :all]
             [toolbelt.datomic.test :as tdt :refer :all]))
 
-
 (use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
 
 
-(deftest orders-conformed?
+(deftest order-schema-conformed
 
   (test-attr a :order/account
     (is (value-type a :ref))
