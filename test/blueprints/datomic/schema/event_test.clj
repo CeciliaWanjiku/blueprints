@@ -5,7 +5,7 @@
 (use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
-(deftest schema-conformed?
+(deftest event-schema-conformed
   (test-attr a :event/uuid
     (is (tdt/value-type a :uuid))
     (is (tdt/unique-identity a)))
