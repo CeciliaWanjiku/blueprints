@@ -237,3 +237,26 @@
      (s/fields
       [consent-given? :boolean
        "Has user given us consent to perform a background check?"]))]))
+
+
+;; ==============================================================================
+;; income file ==================================================================
+;; ==============================================================================
+
+
+(tds/defschema :starcity/add-income-files-schema-8-3-16
+  (s/generate-schema
+   [(s/schema
+     income-file
+     (s/fields
+      [account :ref
+       "The account that this income file belongs to."]
+
+      [content-type :string
+       "The type of content that this file holds."]
+
+      [size :long
+       "The size of this file in bytes."]
+
+      [path :string
+       "The path to this file on the filesystem."]))]))

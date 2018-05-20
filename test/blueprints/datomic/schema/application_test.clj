@@ -115,3 +115,18 @@
 
   (test-attr a :community-safety/consent-given?
     (is (tdt/value-type a :boolean))))
+
+
+(deftest income-file-schema-conformed
+
+  (test-attr a :income-file/account
+    (is (tdt/value-type a :ref)))
+
+  (test-attr a :income-file/content-type
+    (is (tdt/value-type a :string)))
+
+  (test-attr a :income-file/size
+    (is (tdt/value-type a :long)))
+
+  (test-attr a :income-file/path
+    (is (tdt/value-type a :string))))
