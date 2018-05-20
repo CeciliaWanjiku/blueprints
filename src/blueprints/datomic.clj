@@ -2,6 +2,7 @@
   (:require [blueprints.config :as config :refer [config]]
             [blueprints.datomic.schema.account]
             [blueprints.datomic.schema.address]
+            [blueprints.datomic.schema.approval]
             [clojure.string :as string]
             [datomic.api :as d]
             [io.rkn.conformity :as conformity]
@@ -19,7 +20,8 @@
 
 (defn read-schema []
   (->> '[blueprints.datomic.schema.account
-         blueprints.datomic.schema.address]
+         blueprints.datomic.schema.address
+         blueprints.datomic.schema.approval]
        (map create-ns)
        (apply tds/compile-schemas)))
 
