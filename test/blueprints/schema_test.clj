@@ -1,1 +1,0 @@
-(ns blueprints.schema-test)
