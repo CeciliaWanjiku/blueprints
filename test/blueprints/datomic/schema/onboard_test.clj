@@ -1,7 +1,6 @@
 (ns blueprints.schema.onboard-test
-  (:require [toolbelt.datomic.test :as tdt :refer :all]
-            [clojure.test :refer :all]))
-
+  (:require [clojure.test :refer :all]
+            [toolbelt.datomic.test :as tdt :refer :all]))
 
 (use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
 
