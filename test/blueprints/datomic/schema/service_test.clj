@@ -1,12 +1,12 @@
-(ns blueprints.schema.service-test
-  (:require [toolbelt.datomic.test :as tdt :refer :all]
-            [clojure.test :refer :all]))
+(ns blueprints.datomic.schema.service-test
+  (:require [blueprints.datomic]
+            [clojure.test :refer :all]
+            [toolbelt.datomic.test :as tdt :refer :all]))
+
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
-(use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
-
-
-(deftest services-conformed?
+(deftest service-schema-conformed
   (test-attr a :service/code
     (is (value-type a :string))
     (is (fulltext a)))

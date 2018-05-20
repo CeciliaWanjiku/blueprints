@@ -1,8 +1,9 @@
-(ns blueprints.schema.tag
+(ns blueprints.datomic.schema.tag
+  "NOTE: This schema is not currently in use anywhere."
   (:require [datomic-schema.schema :as s]
-            [datomic.api :as d]))
+            [toolbelt.datomic.schema :as tds]))
 
-(def ^{:added "1.4.0"} schema
+(tds/defschema :schema.tag/add-schema-02242017
   (s/generate-schema
    [(s/schema
      tag
@@ -12,7 +13,3 @@
 
       [category :keyword :index
        "A keyword that categorizes this tag."]))]))
-
-(defn norms [part]
-  {:schema.tag/add-schema-02242017
-   {:txes [schema]}})

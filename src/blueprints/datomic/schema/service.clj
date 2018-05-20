@@ -1,57 +1,56 @@
-(ns blueprints.schema.service
+(ns blueprints.datomic.schema.service
   "The `service` entity represents a Starcity offering with monetary value that
   can be purchased."
   (:require [datomic-schema.schema :as s]
             [datomic.api :as d]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic.schema :as tds]))
 
-(def ^{:added "1.5.0"} schema
-  (s/generate-schema
-   [(s/schema
-     service
-     (s/fields
-      [code :string :fulltext
-       "Internal indentifier for this service."]
+(tds/defschema :schema.services/add-schema-04132017
+  (concat
+   (s/generate-schema
+    [(s/schema
+      service
+      (s/fields
+       [code :string :fulltext
+        "Internal indentifier for this service."]
 
-      [name :string :fulltext
-       "Override of service's name for display purposes."]
+       [name :string :fulltext
+        "Override of service's name for display purposes."]
 
-      [desc :string :fulltext
-       "External human-friendy description of this service."]
+       [desc :string :fulltext
+        "External human-friendy description of this service."]
 
-      [desc-internal :string :fulltext
-       "Human-friendly description of this service for internal record-keeping."]
+       [desc-internal :string :fulltext
+        "Human-friendly description of this service for internal record-keeping."]
 
-      [variants :ref :many :component :indexed
-       "Variants of this service."]
+       [variants :ref :many :component :indexed
+        "Variants of this service."]
 
-      [price :float :indexed
-       "Price of a unit of this service. Can be omitted for quote-based services."]
+       [price :float :indexed
+        "Price of a unit of this service. Can be omitted for quote-based services."]
 
-      [rental :boolean :indexed
-       "`true` if this service represents a rental."]
+       [rental :boolean :indexed
+        "`true` if this service represents a rental."]
 
-      [properties :ref :many :indexed
-       "Properties that this service pertains to. If unspecified, assumed to apply to all."]
+       [properties :ref :many :indexed
+        "Properties that this service pertains to. If unspecified, assumed to apply to all."]
 
-      [billed :ref :indexed
-       "Specifies the method in which this service should be billed."]))
+       [billed :ref :indexed
+        "Specifies the method in which this service should be billed."]))
 
-    (s/schema
-     svc-variant
-     (s/fields
-      [name :string :indexed "Name of this variant."]
-      [price :float :indexed "Price override of the base service."]))]))
+     (s/schema
+      svc-variant
+      (s/fields
+       [name :string :indexed "Name of this variant."]
+       [price :float :indexed "Price override of the base service."]))])
 
-
-(defn- billing-types [part]
-  [{:db/id    (d/tempid part)
-    :db/ident :service.billed/once}
-   {:db/id    (d/tempid part)
-    :db/ident :service.billed/monthly}])
+   [{:db/id    (tds/tempid)
+     :db/ident :service.billed/once}
+    {:db/id    (tds/tempid)
+     :db/ident :service.billed/monthly}]))
 
 
-(def ^{:added "1.13.0"} add-cost
+(tds/defschema :schema.service/add-cost-10202017
   (s/generate-schema
    [(s/schema
      service
@@ -65,8 +64,7 @@
       [cost :float :indexed "Cost override of the base service."]))]))
 
 
-
-(defn- ^{:added "2.3.0"} add-fields-and-catalogs [part]
+(tds/defschema :schema.service/add-fields-and-catalogs-03012018
   (concat
    (s/generate-schema
     [(s/schema
@@ -119,15 +117,15 @@
         "The position in which this option should appear within the dropdown menu."]))])
 
 
-   [{:db/id    (d/tempid part)
+   [{:db/id    (tds/tempid)
      :db/ident :service-field.type/time}
-    {:db/id    (d/tempid part)
+    {:db/id    (tds/tempid)
      :db/ident :service-field.type/date}
-    {:db/id    (d/tempid part)
+    {:db/id    (tds/tempid)
      :db/ident :service-field.type/text}
-    {:db/id    (d/tempid part)
+    {:db/id    (tds/tempid)
      :db/ident :service-field.type/number}
-    {:db/id    (d/tempid part)
+    {:db/id    (tds/tempid)
      :db/ident :service-field.type/dropdown}]
 
 
@@ -154,23 +152,22 @@
      :db/unique :db.unique/identity}]))
 
 
-(defn- service-types [part]
-  [{:db/id    (d/tempid part)
-    :db/ident :service.type/service}
-   {:db/id    (d/tempid part)
-    :db/ident :service.type/fee}])
+(tds/defschema :schema.service/add-types-04092018
+  (concat
+   (s/generate-schema
+    [(s/schema
+      service
+      (s/fields
+       [type :ref :indexed
+        "Indicates the type of service (service, fee, event ticket, etc.)"]))])
+
+   [{:db/id    (tds/tempid)
+     :db/ident :service.type/service}
+    {:db/id    (tds/tempid)
+     :db/ident :service.type/fee}]))
 
 
-(def ^{:added "2.4.1"} add-types
-  (s/generate-schema
-   [(s/schema
-     service
-     (s/fields
-      [type :ref :indexed
-       "Indicates the type of service (service, fee, event ticket, etc.)"]))]))
-
-
-(def ^{:added "2.4.4"} add-archive
+(tds/defschema :schema.service/add-archive-04182018
   (s/generate-schema
    [(s/schema
      service
@@ -179,7 +176,7 @@
        "`true` if this service has been archived and will not be offered anymore"]))]))
 
 
-(def ^{:added "2.4.4"} excluded-days
+(tds/defschema :schema.service/add-excluded-days-04192018
   [{:db/id          #db/id[:db.part/db]
     :db/ident       :service-field.date/excluded-days
     :db/valueType   :db.type/long
@@ -189,33 +186,10 @@
                      be fulfilled."}])
 
 
-(def ^{:added "2.5.0"} add-plan-reference
+(tds/defschema :schema.service/add-plan-04102018
   (s/generate-schema
    [(s/schema
      service
      (s/fields
       [plan :ref :indexed
        "Reference to a teller plan."]))]))
-
-
-(defn norms [part]
-  {:schema.services/add-schema-04132017
-   {:txes [schema (billing-types part)]}
-
-   :schema.service/add-cost-10202017
-   {:txes [add-cost]}
-
-   :schema.service/add-fields-and-catalogs-03012018
-   {:txes [(add-fields-and-catalogs part)]}
-
-   :schema.service/add-types-04092018
-   {:txes [(service-types part) add-types]}
-
-   :schema.service/add-archive-04182018
-   {:txes [add-archive]}
-
-   :schema.service/add-excluded-days-04192018
-   {:txes [excluded-days]}
-
-   :schema.service/add-plan-04102018
-   {:txes [add-plan-reference]}})

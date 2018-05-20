@@ -8,11 +8,11 @@
 
 
 (defn create-transaction [id source-id]
-  {:transaction/id id
+  {:transaction/id        id
    :transaction/source-id source-id})
 
 
-(use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
 (defn speculate [db & tx-data]
@@ -29,6 +29,4 @@
       (is (= "txn_19XJJ02eZvKYlo2ClwuJ1rbA" (transaction/id transaction)))
       (is (= "ch_19XJJ02eZvKYlo2CHfSUsSpl" (transaction/source-id transaction)))
       (is (= nil (transaction/payment transaction)))
-      (is (= nil (transaction/payout-id transaction))))
-
-    ))
+      (is (= nil (transaction/payout-id transaction))))))

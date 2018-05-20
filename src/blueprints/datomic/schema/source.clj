@@ -1,17 +1,12 @@
-(ns blueprints.schema.source
+(ns blueprints.datomic.schema.source
   (:require [datomic-schema.schema :as s]
-            [datomic.api :as d]))
+            [datomic.api :as d]
+            [toolbelt.datomic.schema :as tds]))
 
-
-(def ^{:added "1.13.0"} schema
+(tds/defschema :schema.source/add-schema-10032017
   (s/generate-schema
    [(s/schema
      source
      (s/fields
       [account :ref :indexed
        "The account that initiated this transaction."]))]))
-
-
-(defn norms [part]
-  {:schema.source/add-schema-10032017
-   {:txes [schema]}})

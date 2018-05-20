@@ -1,8 +1,8 @@
-(ns blueprints.schema.transaction
-  (:require [datomic-schema.schema :as s]))
+(ns blueprints.datomic.schema.transaction
+  (:require [datomic-schema.schema :as s]
+            [toolbelt.datomic.schema :as tds]))
 
-
-(def ^{:added "1.18.0"} transaction-schema
+(tds/defschema :schema.transaction/transaction-schema-01092018
   (s/generate-schema
    [(s/schema
      transaction
@@ -15,14 +15,3 @@
        "Id of the balance transaction."]
       [payout-id :string :unique-identity
        "Payout-id of the payout once it's been created."]))]))
-
-
-(defn norms [part]
-  {:schema.transaction/transaction-schema-01092018
-   {:txes [transaction-schema]}})
-
-(comment
-
-  transaction-schema
-
-  )

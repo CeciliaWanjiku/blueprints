@@ -1,5 +1,6 @@
 (ns blueprints.datomic.schema.approval-test
-  (:require [clojure.test :refer :all]
+  (:require [blueprints.datomic]
+            [clojure.test :refer :all]
             [toolbelt.datomic.test :as tdt :refer [test-attr]]))
 
 (use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))

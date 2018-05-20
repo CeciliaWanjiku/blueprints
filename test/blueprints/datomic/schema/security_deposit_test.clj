@@ -1,10 +1,10 @@
-(ns blueprints.schema.security-deposit-test
-  (:require [toolbelt.datomic.test :as tdt :refer [test-attr]]
+(ns blueprints.datomic.schema.security-deposit-test
+  (:require [blueprints.datomic]
+            [toolbelt.datomic.test :as tdt :refer [test-attr]]
             [clojure.test :refer :all]
             [clojure.string :as string]))
 
-
-(use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
 (deftest security-deposit-schema-conformed

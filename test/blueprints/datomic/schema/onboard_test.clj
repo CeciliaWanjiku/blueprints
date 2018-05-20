@@ -1,20 +1,21 @@
-(ns blueprints.schema.onboard-test
-  (:require [clojure.test :refer :all]
-            [toolbelt.datomic.test :as tdt :refer :all]))
+(ns blueprints.datomic.schema.onboard-test
+  (:require [blueprints.datomic]
+            [clojure.test :refer :all]
+            [toolbelt.datomic.test :as tdt :refer [test-attr]]))
 
-(use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
 (deftest onboard-conformed?
   (test-attr a :onboard/account
-    (is (value-type a :ref))
-    (is (indexed a)))
+    (is (tdt/value-type a :ref))
+    (is (tdt/indexed a)))
 
   (test-attr a :onboard/move-in
-    (is (value-type a :instant))
-    (is (indexed a)))
+    (is (tdt/value-type a :instant))
+    (is (tdt/indexed a)))
 
   (test-attr a :onboard/seen
-    (is (value-type a :keyword))
-    (is (cardinality a :many))
-    (is (indexed a))))
+    (is (tdt/value-type a :keyword))
+    (is (tdt/cardinality a :many))
+    (is (tdt/indexed a))))

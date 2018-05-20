@@ -1,8 +1,8 @@
-(ns blueprints.schema.sync
-  (:require [datomic-schema.schema :as s]))
+(ns blueprints.datomic.schema.sync
+  (:require [datomic-schema.schema :as s]
+            [toolbelt.datomic.schema :as tds]))
 
-
-(def ^{:added "1.18.0"} add-sync-schema
+(tds/defschema :schema.sync/add-sync-schema-01082018
   (s/generate-schema
    [(s/schema
      sync
@@ -15,8 +15,3 @@
        "The service that `ref` is being synced with."]
       [last-synced :instant :indexed
        "The time at which the referenced entity was last synced."]))]))
-
-
-(defn norms [part]
-  {:schema.sync/add-sync-schema-01082018
-   {:txes [add-sync-schema]}})

@@ -1,4 +1,4 @@
-(ns blueprints.datomic.schema.license-test
+(ns blueprints.datomic.schema.source-test
   (:require [blueprints.datomic]
             [clojure.test :refer :all]
             [toolbelt.datomic.test :as tdt :refer [test-attr]]))
@@ -6,12 +6,8 @@
 (use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
-(deftest license-schema-conformed
+(deftest source-schema-conformed
 
-  (test-attr a :license/term
-    (is (tdt/value-type a :long))
-    (is (tdt/indexed a)))
-
-  (test-attr a :license/available
-    (is (tdt/value-type a :boolean))
+  (test-attr a :source/account
+    (is (tdt/value-type a :ref))
     (is (tdt/indexed a))))

@@ -1,9 +1,8 @@
-(ns blueprints.schema.sync-test
+(ns blueprints.datomic.schema.sync-test
   (:require [toolbelt.datomic.test :as tdt :refer [test-attr]]
             [clojure.test :refer :all]))
 
-
-(use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
 (deftest sync-schema-conformed

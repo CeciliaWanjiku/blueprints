@@ -1,11 +1,11 @@
 (ns blueprints.seed-test
   (:require [blueprints.seed :as seed]
-            [blueprints.schema :as schema]
+            [blueprints.datomic]
             [toolbelt.datomic.test :as tdt :refer [with-conn]]
             [clojure.test :refer :all]
             [datomic.api :as d]))
 
-(use-fixtures :once (tdt/conn-fixture schema/conform))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 ;; We don't need to check for the presence of all entities in our seed sets due
 ;; to the transactional aspect of Datomic--if some of the data is there, all of

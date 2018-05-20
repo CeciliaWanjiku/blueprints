@@ -1,7 +1,9 @@
-(ns blueprints.schema.news
-  (:require [datomic-schema.schema :as s]))
+(ns blueprints.datomic.schema.deprecated.news
+  "NOTE: This schema is DEPRECATED and preserved for future reference."
+  (:require [datomic-schema.schema :as s]
+            [toolbelt.datomic.schema :as tds]))
 
-(def ^{:added "1.2.0"} schema
+(tds/defschema :schema.news/add-news-schema
   (s/generate-schema
    [(s/schema
      news
@@ -26,7 +28,3 @@
 
       [created-at :instant :index
        "Time at which this entity was created -- used for sorting."]))]))
-
-(defn norms [part]
-  {:schema.news/add-news-schema
-   {:txes [schema]}})

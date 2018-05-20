@@ -1,8 +1,9 @@
-(ns blueprints.schema.note-test
-  (:require [clojure.test :refer :all]
+(ns blueprints.datomic.schema.note-test
+  (:require [blueprints.datomic]
+            [clojure.test :refer :all]
             [toolbelt.datomic.test :as tdt :refer [test-attr]]))
 
-(use-fixtures :once (tdt/conn-fixture blueprints.schema/conform))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
 
 
 (deftest note-schema-conformed

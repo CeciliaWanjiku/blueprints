@@ -1,8 +1,8 @@
-(ns blueprints.schema.suggestion
-  (:require [datomic-schema.schema :as s]))
+(ns blueprints.datomic.schema.deprecated.suggestion
+  (:require [datomic-schema.schema :as s]
+            [toolbelt.datomic.schema :as tds]))
 
-
-(def ^{:added "1.10.3"} schema
+(tds/defschema :schema.suggestion/add-schema
   (s/generate-schema
    [(s/schema
      suggestion
@@ -12,8 +12,3 @@
 
       [account :ref :indexed
        "The (optional) account of the suggester."]))]))
-
-
-(defn norms [part]
-  {:schema.suggestion/add-schema
-   {:txes [schema]}})
