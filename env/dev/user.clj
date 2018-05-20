@@ -1,11 +1,9 @@
 (ns user
-  (:require [mount.core :as mount :refer [defstate]]
+  (:require [blueprints.core :as blueprints]
+            [clojure.spec.test.alpha :as stest]
             [clojure.tools.namespace.repl :refer [refresh set-refresh-dirs]]
             [datomic.api :as d]
-            [blueprints.core :as blueprints]
-            [clojure.spec.test.alpha :as stest]))
-
-
+            [mount.core :as mount :refer [defstate]]))
 
 (def start mount/start)
 
@@ -22,19 +20,3 @@
 (defn reset []
   (stop)
   (refresh :after 'user/go))
-
-
-(defn- new-connection [uri]
-  (d/create-database uri)
-  (let [conn (d/connect uri)]
-    (blueprints/conform-db conn :db.part/starcity)
-    conn))
-
-
-(defn- disconnect [conn]
-  (d/release conn))
-
-
-(defstate conn
-  :start (new-connection "datomic:mem://localhost:4334/starcity")
-  :stop (disconnect conn))
