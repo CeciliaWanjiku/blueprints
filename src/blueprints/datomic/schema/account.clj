@@ -1,8 +1,6 @@
 (ns blueprints.datomic.schema.account
   (:require [datomic-schema.schema :as s]
-            [datomic.api :as d]
             [toolbelt.datomic.schema :as tds]))
-
 
 ;; added 1.0.0
 (tds/defschema :starcity/add-account-schema
