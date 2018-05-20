@@ -1,4 +1,4 @@
-(ns blueprints.schema.account-test
+(ns blueprints.datomic.schema.account-test
   (:require [clojure.test :refer :all]
             [toolbelt.datomic.test :as tdt :refer [test-attr]]))
 
