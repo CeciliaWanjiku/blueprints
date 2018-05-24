@@ -13,6 +13,7 @@
                  [http-kit "2.3.0"]
                  [compojure "1.6.1"]
                  [ring-middleware-format "0.7.2"]
+                 [bouncer "1.0.1"]
                  ;; graphql
                  [com.walmartlabs/lacinia "0.26.0"]
                  [vincit/venia "0.2.5"]

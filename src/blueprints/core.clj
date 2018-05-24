@@ -1,5 +1,9 @@
 (ns blueprints.core
-  (:require [blueprints.datomic]))
+  (:require [blueprints.datomic]
+            [blueprints.log]
+            [blueprints.nrepl]
+            [blueprints.graphql]
+            [blueprints.teller]))
 
 
 (comment

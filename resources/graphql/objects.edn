@@ -1,0 +1,511 @@
+{:objects
+ {:account
+  {:implements [:person]
+   :fields     {:id                {:type    (non-null :Long)
+                                    :resolve (:get :db/id)}
+                :active_license    {:type        :license
+                                    :description "The active member license for this account."
+                                    :resolve     :account/active-license}
+                :application       {:type    :application
+                                    :resolve (:get :account/application)}
+                :created           {:type    (non-null :Instant)
+                                    :resolve :entity/created}
+                :deposit           {:type        :deposit
+                                    :description "Security deposit for this account."
+                                    :resolve     :account/deposit}
+                :dob               {:type    :Instant
+                                    :resolve (:get :account/dob)}
+                :email             {:type    (non-null String)
+                                    :resolve (:get :account/email)}
+                :emergency_contact {:type    :emergency_contact
+                                    :resolve :account/emergency-contact}
+                :first_name        {:type    (non-null String)
+                                    :resolve (:get :person/first-name)}
+                :full_name         {:type    (non-null String)
+                                    :resolve :person/full-name}
+                :last_name         {:type    (non-null String)
+                                    :resolve (:get :person/last-name)}
+                :licenses          {:type        (list :license)
+                                    :description "All licenses belonging to this account."
+                                    :resolve     (:get :account/licenses)}
+                :name              {:type    (non-null String)
+                                    :resolve :person/short-name}
+                :notes             {:type    (list :note)
+                                    :resolve :account/notes}
+                :phone             {:type    String
+                                    :resolve (:get :person/phone-number)}
+                :property          {:type    :property
+                                    :resolve :account/property}
+                :role              {:type    (non-null :role)
+                                    :resolve :account/role}
+                :service_source    {:type        :payment_source
+                                    :description "The source to use to pay for premium service orders."
+                                    :resolve     :account/service-source}}}
+
+
+  :application
+  {:fields {:id          {:type    (non-null :Long)
+                          :resolve (:get :db/id)}
+            :account     {:type    (non-null :account)
+                          :resolve :application/account}
+            :approved_at {:type    :Instant
+                          :resolve :application/approved-at}
+            :approved_by {:type    :account
+                          :resolve :application/approved-by}
+            :term        {:type        :Long
+                          :resolve     :application/term
+                          :description "Desired term."}
+            :communities {:type    (list :property)
+                          :resolve (:get :application/communities)}
+            :move_in     {:type        :Instant
+                          :resolve     (:get :application/move-in)
+                          :description "Desired move-in date."}
+            :has_pet     {:type    Boolean
+                          :resolve (:get :application/has-pet)}
+            :pet         {:type    :application_pet
+                          :resolve (:get :application/pet)}
+            :fitness     {:type    :application_fitness
+                          :resolve (:get :application/fitness)}
+            :status      {:type    :application_status
+                          :resolve :application/status}
+            :income      {:type        (list :application_income_file)
+                          :resolve     :application/income
+                          :description "Income file paths."}
+            :submitted   {:type    :Instant
+                          :resolve :application/submitted-at}
+            :created     {:type    (non-null :Instant)
+                          :resolve :entity/created}
+            :updated     {:type    (non-null :Instant)
+                          :resolve :application/updated}}}
+
+
+  :application_income_file
+  {:fields {:id   {:type    (non-null :Long)
+                   :resolve (:get :db/id)}
+            :name {:type    (non-null String)
+                   :resolve :application.income-file/name}
+            :uri  {:type    (non-null String)
+                   :resolve :application.income-file/uri}}}
+
+
+  :application_pet
+  {:fields {:type         {:type        :application_pet_type
+                           :resolve     (:get :pet/type)
+                           :description "The type of pet."}
+            :breed        {:type        String
+                           :resolve     (:get :pet/breed)
+                           :description "The pet's breed."}
+            :weight       {:type        Long
+                           :resolve     (:get :pet/weight)
+                           :description "The pet's weight."}
+            :sterile      {:type        Boolean
+                           :resolve     (:get :pet/sterile)
+                           :description "Has the pet been sterilized (spayed/neutered)?"}
+            :vaccines     {:type        Boolean
+                           :resolve     (:get :pet/vaccines)
+                           :description "Are the pet's vaccines, licenses and inoculations current?"}
+            :bitten       {:type        Boolean
+                           :resolve     (:get :pet/bitten)
+                           :description "Has the pet bitten a human before?"}
+            :demeanor     {:type        String
+                           :resolve     (:get :pet/demeanor)
+                           :description "Description of the pet's demeanor."}
+            :daytime_care {:type        String
+                           :resolve     (:get :pet/daytime-care)
+                           :description "Description of how the pet will be taken care of during the day."}}}
+
+
+  :application_fitness
+  {:fields {:experience   {:type    String
+                           :resolve (:get :fitness/experience)}
+            :skills       {:type    String
+                           :resolve (:get :fitness/skills)}
+            :free_time    {:type    String
+                           :resolve (:get :fitness/free-time)}
+            :interested   {:type    String
+                           :resolve (:get :fitness/interested)}
+            :dealbreakers {:type    String
+                           :resolve (:get :fitness/dealbreakers)}
+            :conflicts    {:type    String
+                           :resolve (:get :fitness/conflicts)}}}
+
+
+  :check
+  {:fields {:id          {:type    (non-null :ID)
+                          :resolve :check/id}
+            :payment     {:type    (non-null :payment)
+                          :resolve :check/payment}
+            :amount      {:type    (non-null Float)
+                          :resolve :check/amount}
+            :name        {:type    (non-null String)
+                          :resolve :check/name}
+            :dated       {:type    (non-null :Instant)
+                          :resolve :check/date}
+            :received_on {:type    (non-null :Instant)
+                          :resolve :check/received-on}}}
+
+
+  :deposit
+  {:fields {:id               {:type    (non-null :Long)
+                               :resolve (:get :db/id)}
+            :amount           {:type        (non-null Float)
+                               :description "The total amount of the security deposit."
+                               :resolve     (:get :deposit/amount)}
+            :due              {:type        :Instant
+                               :description "The due date of the entire security deposit."
+                               :resolve     (:get :deposit/due)}
+            :account          {:type    (non-null :account)
+                               :resolve (:get :deposit/account)}
+            :payments         {:type        (list :payment)
+                               :description "Payments made towards the security deposit."
+                               :resolve     :deposit/payments}
+            :status           {:type    (non-null :deposit_status)
+                               :resolve :deposit/status}
+            :amount_remaining {:type        (non-null Float)
+                               :description "The amount remaining to be paid."
+                               :resolve     :deposit/amount-remaining}
+            :amount_paid      {:type        (non-null Float)
+                               :description "The amount paid so far."
+                               :resolve     :deposit/amount-paid}
+            :amount_pending   {:type        (non-null Float)
+                               :description "The amount currently pending."
+                               :resolve     :deposit/amount-pending}
+            :refund_status    {:type        :deposit_refund_status
+                               :description "The status of the refund, if any."
+                               :resolve     :deposit/refund-status}}}
+
+
+  :emergency_contact
+  {:implements [:person]
+   :fields     {:name       {:type    (non-null String)
+                             :resolve :person/full-name}
+                :first_name {:type    (non-null String)
+                             :resolve (:get :person/first-name)}
+                :last_name  {:type    (non-null String)
+                             :resolve (:get :person/last-name)}
+                :phone      {:type    (non-null String)
+                             :resolve (:get :person/phone-number)}}}
+
+
+  :license
+  {:fields {:id          {:type    (non-null :Long)
+                          :resolve (:get :db/id)}
+            :rate        {:type        (non-null Float)
+                          :description "The amount paid for rent each month."
+                          :resolve     (:get :member-license/rate)}
+            :payments    {:type        (list :payment)
+                          :description "The rent payments for this license."
+                          :resolve     :member-license/rent-payments}
+            :starts      {:type        (non-null :Instant)
+                          :description "Start date of the member license (commencement)."
+                          :resolve     (:get :member-license/commencement)}
+            :ends        {:type        (non-null :Instant)
+                          :description "End date of the member license."
+                          :resolve     (:get :member-license/ends)}
+            :term        {:type        (non-null Long)
+                          :description "Term in months of the license."
+                          :resolve     (:get :member-license/license :license/term)}
+            :unit        {:type        (non-null :unit)
+                          :description "The unit that htis license pertains to."
+                          :resolve     (:get :member-license/unit)}
+            :account     {:type        (non-null :account)
+                          :description "Account that owns this license."
+                          :resolve     (:get :account/_license)}
+            :status      {:type    (non-null :license_status)
+                          :resolve :member-license/status}
+            :rent_status {:type    :rent_status
+                          :resolve :member-license/rent-status}
+            :property    {:type        (non-null :property)
+                          :description "Property that this license is for."
+                          :resolve     (:get :member-license/unit :property/_units)}}}
+
+
+  :note
+  {:fields {:id       {:type    (non-null :Long)
+                       :resolve (:get :db/id)}
+            :author   {:type    :account
+                       :resolve (:get :note/author)}
+            :account  {:type    :account
+                       :resolve :note/account}
+            :subject  {:type    String
+                       :resolve (:get :note/subject)}
+            :content  {:type    (non-null String)
+                       :resolve (:get :note/content)}
+            :comments {:type    (list :note)
+                       :resolve (:get :note/children)}
+            :created  {:type    (non-null :Instant)
+                       :resolve :entity/created}
+            :updated  {:type    (non-null :Instant)
+                       :resolve :entity/updated}}}
+
+
+  :order
+  {:fields {:id                    {:type    (non-null :Long)
+                                    :resolve (:get :db/id)}
+            :price                 {:type    Float
+                                    :resolve :order/price}
+            :cost                  {:type    Float
+                                    :resolve :order/cost}
+            :quantity              {:type    Float
+                                    :resolve (:get :order/quantity)}
+            :name                  {:type    String
+                                    :resolve :order/name}
+            :desc                  {:type        String
+                                    :description "DEPRECATED: Use `:request` or `:summary`."
+                                    :resolve     (:get :order/desc)}
+            :request               {:type    String
+                                    :resolve (:get :order/request)}
+            :summary               {:type    String
+                                    :resolve (:get :order/summary)}
+            :status                {:type    (non-null :order_status)
+                                    :resolve :order/status}
+            :billed_on             {:type    :Instant
+                                    :resolve :order/billed-on}
+            :fulfilled_on          {:type    :Instant
+                                    :resolve :order/fulfilled-on}
+            :account               {:type    (non-null :account)
+                                    :resolve (:get :order/account)}
+            :service               {:type    (non-null :service)
+                                    :resolve (:get :order/service)}
+            :payments              {:type    (list :payment)
+                                    :resolve :order/payments}
+            :property              {:type    (non-null :property)
+                                    :resolve :order/property}
+            :projected_fulfillment {:type    :Instant
+                                    :resolve (:get :order/projected-fulfillment)}
+            :variant               {:type    :service_variant
+                                    :resolve (:get :order/variant)}
+            :line_items            {:type    (list :line_item)
+                                    :resolve (:get :order/lines)}
+            :fields                {:type    (list :order_field)
+                                    :resolve (:get :order/fields)}
+            :created               {:type    (non-null :Instant)
+                                    :resolve :entity/created}
+            :updated               {:type    (non-null :Instant)
+                                    :resolve :entity/updated}
+            :billed                {:type        :service_billed
+                                    :description "Orders are billed `once` for one time services or `monthly` for subscriptions"
+                                    :resolve     (:keyword/name :order/service :service/billed)}}}
+
+
+  :order_field
+  {:fields {:id    {:type    (non-null :Long)
+                    :resolve (:get :db/id)}
+            :label {:type    (non-null String)
+                    :resolve (:get :order-field/service-field :service-field/label)}
+            :value {:type    :Any
+                    :resolve :order-field/value}
+            :type  {:type    (non-null :service_field_type)
+                    :resolve (:keyword/name :order-field/service-field :service-field/type)}
+            :index {:type    (non-null :Long)
+                    :resolve (:get :order-field/service-field :service-field/index)}}}
+
+
+  :line_item
+  {:fields {:id    {:type    (non-null :Long)
+                    :resolve (:get :db/id)}
+            :desc  {:type    (non-null String)
+                    :resolve (:get :line-item/desc)}
+            :cost  {:type    Float
+                    :resolve (:get :line-item/cost)}
+            :price {:type    (non-null Float)
+                    :resolve (:get :line-item/price)}}}
+
+
+  :payment
+  {:fields {:id          {:type    (non-null :ID)
+                          :resolve :payment/id}
+            :account     {:type    (non-null :account)
+                          :resolve :payment/account}
+            :amount      {:type    (non-null Float)
+                          :resolve :payment/amount}
+            :autopay     {:type        Boolean
+                          :description "Is this an autopay payment?"
+                          :resolve     :payment/autopay?}
+            :check       {:type    :check
+                          :resolve :payment/check}
+            :created     {:type    (non-null :Instant)
+                          :resolve :payment/created}
+            :description {:type    String
+                          :resolve :payment/description}
+            :due         {:type    :Instant
+                          :resolve :payment/due}
+            :ext_id      {:type        String
+                          :description "DEPRECATED: The Stripe external id."
+                          :resolve     :payment/id}
+            :late_fee    {:type    Float
+                          :resolve :payment/late-fee}
+            :method      {:type    :payment_method
+                          :resolve :payment/method}
+            :order       {:type    :order
+                          :resolve :payment/order}
+            :paid_on     {:type    :Instant
+                          :resolve :payment/paid-on}
+            :pend        {:type        :Instant
+                          :description "Period end."
+                          :resolve     :payment/pend}
+            :property    {:type        :property
+                          :description "The property that the member that made this payment is associated with."
+                          :resolve     :payment/property}
+            :pstart      {:type        :Instant
+                          :description "Period start."
+                          :resolve     :payment/pstart}
+            :source      {:type    :payment_source
+                          :resolve :payment/source}
+            :status      {:type    :payment_status
+                          :resolve :payment/status}
+            :subtypes    {:type    (list :Keyword)
+                          :resolve :payment/subtypes}
+            :type        {:type    :payment_type
+                          :resolve :payment/type}
+            :uuid        {:type    (non-null String)
+                          :resolve :payment/id}}}
+
+
+  :payment_source
+  {:fields {:id       {:type    (non-null String)
+                       :resolve :payment-source/id}
+            :account  {:type    (non-null :account)
+                       :resolve :payment-source/account}
+            :last4    {:type    (non-null String)
+                       :resolve :payment-source/last4}
+            :default  {:type    (non-null Boolean)
+                       :resolve :payment-source/default?}
+            :expires  {:type    String
+                       :resolve :payment-source/expiration}
+            :customer {:type    String
+                       :resolve :payment-source/customer}
+            :status   {:type    String
+                       :resolve :payment-source/status}
+            :autopay  {:type    Boolean
+                       :resolve :payment-source/autopay?}
+            :type     {:type    (non-null :payment_source_type)
+                       :resolve :payment-source/type}
+            :name     {:type    String
+                       :resolve :payment-source/name}
+            :payments {:type        (list :payment)
+                       :description "Payments associated with this source."
+                       :resolve     :payment-source/payments}}}
+
+  :property
+  {:fields {:id              {:type    (non-null :Long)
+                              :resolve (:get :db/id)}
+            :name            {:type    (non-null String)
+                              :resolve (:get :property/name)}
+            :code            {:type    (non-null String)
+                              :resolve (:get :property/internal-name)}
+            :cover_image_url {:type    (non-null String)
+                              :resolve (:get :property/cover-image-url)}
+            :units           {:type    (list :unit)
+                              :resolve (:get :property/units)}
+            :rates           {:type    (list :rate)
+                              :resolve :property/license-prices}
+            :tours           {:type        (non-null Boolean)
+                              :description "Is touring enabled?"
+                              :resolve     :property/tours}}}
+
+
+  :rate
+  {:fields {:id   {:type    (non-null :Long)
+                   :resolve (:get :db/id)}
+            :rate {:type    (non-null Float)
+                   :resolve (:get :license-price/price)}
+            :term {:type    (non-null Int)
+                   :resolve (:get :license-price/license :license/term)}}}
+
+
+  :service
+  {:fields {:id            {:type    (non-null :Long)
+                            :resolve (:get :db/id)}
+            :name          {:type    (non-null String)
+                            :resolve (:get :service/name)}
+            :name_internal {:type    String
+                            :resolve (:get :service/name-internal)}
+            :description   {:type    String
+                            :resolve (:get :service/desc)}
+            :code          {:type    (non-null String)
+                            :resolve (:get :service/code)}
+            :price         {:type    Float
+                            :resolve (:get :service/price)}
+            :cost          {:type    Float
+                            :resolve (:get :service/cost)}
+            :billed        {:type    :service_billed
+                            :resolve :service/billed}
+            :rental        {:type    Boolean
+                            :resolve (:get :service/rental)}
+            :variants      {:type    (list :service_variant)
+                            :resolve (:get :service/variants)}
+            :active        {:type    Boolean
+                            :resolve (:get :service/active)}
+            :catalogs      {:type    (list :Keyword)
+                            :resolve (:get :service/catalogs)}
+            :properties    {:type    (list :property)
+                            :resolve (:get :service/properties)}
+            :fields        {:type    (list :service_field)
+                            :resolve (:get :service/fields)}
+            :fees          {:type    (list :service)
+                            :resolve (:get :service/fees)}
+            :type          {:type    :service_type
+                            :resolve :service/type}
+            :updated_at    {:type    :Instant
+                            :resolve :service/updated}
+            :archived      {:type    Boolean
+                            :resolve (:get :service/archived)}}}
+
+
+  :service_field
+  {:fields {:id            {:type    (non-null :Long)
+                            :resolve (:get :db/id)}
+            :index         {:type    (non-null Int)
+                            :resolve (:get :service-field/index)}
+            :type          {:type    :service_field_type
+                            :resolve (:keyword/name :service-field/type)}
+            :label         {:type    (non-null String)
+                            :resolve (:get :service-field/label)}
+            :required      {:type    Boolean
+                            :resolve (:get :service-field/required)}
+            :options       {:type    (list :service_field_option)
+                            :resolve (:get :service-field/options)}
+            :excluded_days {:type    (list :Long)
+                            :resolve :service-field.date/excluded_days}}}
+
+
+  :service_field_option
+  {:fields {:index {:type    (non-null :Long)
+                    :resolve (:get :service-field-option/index)}
+            :value {:type    (non-null String)
+                    :resolve (:get :service-field-option/value)}
+            :label {:type    (non-null String)
+                    :resolve (:get :service-field-option/label)}}}
+
+
+  :service_variant
+  {:fields {:id    {:type    (non-null :Long)
+                    :resolve (:get :db/id)}
+            :name  {:type    (non-null String)
+                    :resolve (:get :svc-variant/name)}
+            :cost  {:type    Float
+                    :resolve (:get :svc-variant/cost)}
+            :price {:type    Float
+                    :resolve (:get :svc-variant/price)}}}
+
+
+  :unit
+  {:fields {:id       {:type    (non-null :Long)
+                       :resolve (:get :db/id)}
+            :name     {:type        (non-null String)
+                       :description "Human-friendly name of this unit."
+                       :resolve     :unit/name}
+            :code     {:type        (non-null String)
+                       :description "Internal unit code to identify this unit."
+                       :resolve     (:get :unit/name)}
+            :number   {:type        (non-null Int)
+                       :description "Room number."
+                       :resolve     :unit/number}
+            :occupant {:type        :account
+                       :description "Account for the person living in this room, if any."
+                       :resolve     :unit/occupant}
+            :property {:type    (non-null :property)
+                       :resolve (:get :property/_units)}
+            :rates    {:type    (list :rate)
+                       :resolve (:get :unit/licenses)}}}}}

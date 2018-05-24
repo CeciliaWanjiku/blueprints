@@ -1,0 +1,81 @@
+(ns blueprints.graphql.resolvers.check
+  (:require [blueprints.graphql.authorization :as authorization]
+            [blueprints.models.account :as account]
+            [blueprints.models.check :as check]
+            [teller.check :as tcheck]
+            [teller.payment :as tpayment]
+            [toolbelt.core :as tb]))
+
+;; =============================================================================
+;; Fields
+;; =============================================================================
+
+
+(defn payment
+  "The payment that this `check` belongs to."
+  [_ _ check]
+  (tcheck/payment check))
+
+
+(defn amount
+  "The amount of this `check`."
+  [_ _ check]
+  (tcheck/amount check))
+
+
+(defn check-name
+  "The name of the person who wrote this `check`."
+  [_ _ check]
+  (tcheck/name check))
+
+
+(defn received-on
+  "The date this `check` was received."
+  [_ _ check]
+  (tcheck/received-on check))
+
+
+(defn date
+  "The date this `check` was written."
+  [_ _ check]
+  (tcheck/date check))
+
+
+;; =============================================================================
+;; Mutations
+;; =============================================================================
+
+
+(defn create!
+  [{:keys [teller]}
+   {{:keys [payment amount name received_date check_date bank number]} :params} _]
+  (let [payment'   (tpayment/by-id teller payment)
+        check-data (tb/assoc-when
+                    {:amount      amount
+                     :name        name
+                     :received-on received_date
+                     :date        check_date}
+                    :number      number
+                    :bank        bank)]
+    (tpayment/add-check! payment' check-data)))
+
+
+;; =============================================================================
+;; Resolvers
+;; =============================================================================
+
+
+(defmethod authorization/authorized? :check/create! [_ account _]
+  (account/admin? account))
+
+
+(def resolvers
+  {;;fields
+   :check/id          (fn [_ _ check] (tcheck/id check))
+   :check/payment     payment
+   :check/amount      amount
+   :check/name        check-name
+   :check/received-on received-on
+   :check/date        date
+   ;; mutations
+   :check/create!     create!})
