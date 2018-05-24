@@ -91,10 +91,3 @@
   :start (new-connection (config/datomic-uri config)
                          (config/datomic-partition config))
   :stop (disconnect (config/datomic-uri config) conn))
-
-
-(comment
-
-  (read-schema)
-
-  )
