@@ -279,6 +279,12 @@
   (partial is-role? :account.role/admin))
 
 
+(defn ^{:added "3.0.0"} role?
+  "Is `x` a valid role?"
+  [x]
+  (s/valid? ::role x))
+
+
 (defn can-approve?
   "An account can be *approved* if the application is submitted and the account
   has the `:account.status/applicant` role."

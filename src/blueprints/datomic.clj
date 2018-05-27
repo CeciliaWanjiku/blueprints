@@ -1,6 +1,6 @@
 (ns blueprints.datomic
   (:require [blueprints.config :as config :refer [config]]
-            [blueprints.schema :as schema]
+            [blueprints.datomic.schema :as schema]
             [clojure.string :as string]
             [datomic.api :as d]
             [io.rkn.conformity :as conformity]

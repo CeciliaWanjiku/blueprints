@@ -4,6 +4,7 @@
             [blueprints.datomic.schema.approval]
             [blueprints.datomic.schema.application]
             [blueprints.datomic.schema.avatar]
+            [blueprints.datomic.schema.auth]
             [blueprints.datomic.schema.event]
             [blueprints.datomic.schema.license]
             [blueprints.datomic.schema.member-license]
@@ -14,7 +15,6 @@
             [blueprints.datomic.schema.referral]
             [blueprints.datomic.schema.security-deposit]
             [blueprints.datomic.schema.service]
-            [blueprints.datomic.schema.session]
             [blueprints.datomic.schema.source]
             [blueprints.datomic.schema.sync]
             [blueprints.datomic.schema.tag]
@@ -39,6 +39,7 @@
          blueprints.datomic.schema.approval
          blueprints.datomic.schema.application
          blueprints.datomic.schema.avatar
+         blueprints.datomic.schema.auth
          blueprints.datomic.schema.event
          blueprints.datomic.schema.license
          blueprints.datomic.schema.member-license
@@ -49,7 +50,6 @@
          blueprints.datomic.schema.referral
          blueprints.datomic.schema.security-deposit
          blueprints.datomic.schema.service
-         blueprints.datomic.schema.session
          blueprints.datomic.schema.source
          blueprints.datomic.schema.sync
          blueprints.datomic.schema.tag
