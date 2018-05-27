@@ -1,4 +1,4 @@
-(ns blueprints.schema
+(ns blueprints.datomic.schema
   (:require [blueprints.datomic.schema.account]
             [blueprints.datomic.schema.address]
             [blueprints.datomic.schema.approval]
