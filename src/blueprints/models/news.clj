@@ -2,7 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -19,7 +20,7 @@
   "Create a new news item."
   [account content & {:keys [avatar action title]}]
   (tb/assoc-when
-   {:db/id           (d/tempid :db.part/starcity)
+   {:db/id           (tds/tempid)
     :news/account    (td/id account)
     :news/content    content
     :news/dismissed  false

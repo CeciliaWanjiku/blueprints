@@ -59,7 +59,7 @@
 (defn order
   [account-id service-id service & {:keys [quantity desc variant price cost fields]}]
   (toolbelt.core/assoc-when
-   {:db/id         (utils/tempid)
+   {:db/id         (tds/tempid)
     :order/uuid    (d/squuid)
     :order/service service-id
     :order/account account-id

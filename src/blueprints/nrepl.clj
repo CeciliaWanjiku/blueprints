@@ -4,7 +4,7 @@
             [mount.core :as mount :refer [defstate]]
             [taoensso.timbre :as timbre]))
 
-(defn- start-nrepl [port]
+(defn start-nrepl [port]
   (timbre/info ::starting {:port port})
   (start-server :port port))
 

@@ -1,14 +1,20 @@
 (ns blueprints.routes
   (:require [blueprints.config :as config]
+            [blueprints.graphql :as graph]
             [blueprints.models.account :as account]
+            [blueprints.util.auth :refer [unauthorized-handler]]
             [buddy.auth.accessrules :refer [restrict]]
             [compojure.core :as compojure :refer [context defroutes GET POST]]
+            [com.walmartlabs.lacinia :refer [execute]]
             [customs.access :as access]
             [customs.auth :as auth]
             [customs.role :as role]
             [datomic.api :as d]
             [ring.util.response :as response]
-            [toolbelt.datomic :as td]))
+            [toolbelt.core :as tb]
+            [toolbelt.datomic :as td]
+            [taoensso.timbre :as timbre]
+            [buddy.auth :as buddy]))
 
 
 ;; ==============================================================================
@@ -22,7 +28,7 @@
     :post [:mutation (get-in request [:params :mutation] "")]))
 
 
-(defn context
+(defn ->context
   [{{:keys [conn requester config teller]} :deps}]
   {:conn      conn
    :requester requester
@@ -38,16 +44,15 @@
 
 
 (defn graphql-handler
-  [schema]
-  (fn [req]
-    (let [[op expr] (extract-graphql-expression req)
-          result    (execute schema
-                             (format "%s %s" (name op) expr)
-                             nil
-                             (context req))]
-      (-> (response/response result)
-          (response/content-type "application/transit+json")
-          (response/status (result->status result))))))
+  [req]
+  (let [[op expr] (extract-graphql-expression req)
+        result    (execute (get-in req [:deps :graphql])
+                           (format "%s %s" (name op) expr)
+                           nil
+                           (->context req))]
+    (-> (response/response result)
+        (response/content-type "application/transit+json")
+        (response/status (result->status result)))))
 
 
 ;; ==============================================================================
@@ -109,16 +114,17 @@
 
 (defroutes api
 
-  (GET "/graphql" [] (graphql-handler graph/schema))
-  (POST "/graphql" [] (graphql-handler graph/schema))
+  (GET "/graphql" [] graphql-handler)
+  (POST "/graphql" [] graphql-handler)
 
   (GET "/history/:entity-id" [entity-id]
        (fn [req]
-         (let [db (d/db (->conn req))]
+         (let [db (d/db (get-in req [:deps :conn]))]
            (-> (response/response {:data {:history (history db (tb/str->int entity-id))}})
                (response/content-type "application/transit+json"))))))
 
 
 (defroutes routes
 
-  (context "/" [] (restrict api {:handler access-handler})))
+  (context "/" [] (restrict api {:handler  access-handler
+                                 :on-error unauthorized-handler})))

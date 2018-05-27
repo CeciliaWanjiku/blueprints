@@ -4,7 +4,8 @@
             [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.datomic :as td]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [toolbelt.datomic.schema :as tds]))
 
 ;; =============================================================================
 ;; Spec
@@ -383,7 +384,7 @@
   "Create a new collaborator account. This is currently created for the express
   purpose of "
   [email]
-  {:db/id         (d/tempid :db.part/starcity)
+  {:db/id         (tds/tempid)
    :account/email email
    :account/role  :account.role/collaborator})
 

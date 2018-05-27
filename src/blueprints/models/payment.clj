@@ -6,7 +6,8 @@
             [clj-time.core :as t]
             [datomic.api :as d]
             [toolbelt.date :as date]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 (def max-autopay-failures
@@ -311,7 +312,7 @@
                  (and (some? charge-id) (nil? method))  :payment.method/stripe-charge
                  :otherwise                             method)]
     (toolbelt.core/assoc-when
-     {:db/id           (d/tempid :db.part/starcity)
+     {:db/id           (tds/tempid)
       :payment/id      uuid
       :payment/amount  amount
       :payment/account (td/id account)

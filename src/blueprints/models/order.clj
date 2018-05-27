@@ -5,7 +5,8 @@
             [clojure.string :as string]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -556,7 +557,7 @@
                      :or   {status :order.status/pending}
                      :as   opts}]
    (tb/assoc-when
-    {:db/id         (d/tempid :db.part/starcity)
+    {:db/id         (tds/tempid)
      :order/uuid    (d/squuid)
      :order/service (td/id service)
      :order/account (td/id account)

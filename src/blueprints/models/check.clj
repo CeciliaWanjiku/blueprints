@@ -3,7 +3,8 @@
   (:require [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -119,7 +120,7 @@
   "Produce the tx-data required to create a `check` entity."
   [name amount date number & {:keys [status received-on bank]}]
   (tb/assoc-when
-   {:db/id        (d/tempid :db.part/starcity)
+   {:db/id        (tds/tempid)
     :check/name   name
     :check/amount amount
     :check/date   date
@@ -142,7 +143,7 @@
   "Produce the tx-data required to create a `check` entity."
   [name amount date received-on & {:keys [status number bank]}]
   (tb/assoc-when
-   {:db/id             (d/tempid :db.part/starcity)
+   {:db/id             (tds/tempid)
     :check/name        name
     :check/amount      amount
     :check/date        date

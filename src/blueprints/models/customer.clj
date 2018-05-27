@@ -2,7 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -78,7 +79,7 @@
   "Create a new Stripe customer."
   [customer-id account & {:keys [bank-token managing-property]}]
   (tb/assoc-when
-   {:db/id                       (d/tempid :db.part/starcity)
+   {:db/id                       (tds/tempid)
     :stripe-customer/customer-id customer-id
     :stripe-customer/account     (when-some [a account] (td/id a))}
    :stripe-customer/bank-account-token bank-token

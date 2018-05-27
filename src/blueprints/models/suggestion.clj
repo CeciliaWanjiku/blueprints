@@ -3,7 +3,8 @@
             [clojure.string :as string]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -42,7 +43,7 @@
   "Create a new suggestion."
   [city & [account]]
   (tb/assoc-when
-   {:db/id           (d/tempid :db.part/starcity)
+   {:db/id           (tds/tempid)
     :suggestion/city (-> city string/trim string/lower-case)}
    :suggestion/account (when-let [a account] (td/id a))))
 

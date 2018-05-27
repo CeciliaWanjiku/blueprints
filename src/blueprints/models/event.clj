@@ -3,7 +3,8 @@
   (:require [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 ;; =============================================================================
 ;; Status
@@ -138,7 +139,7 @@
         meta   (when meta (pr-str meta))
         tid    (when-some [e triggered-by] (td/id e))]
     (tb/assoc-when
-     {:db/id        (d/tempid :db.part/starcity)
+     {:db/id        (tds/tempid)
       :event/uuid   uuid
       :event/key    key
       :event/topic  topic

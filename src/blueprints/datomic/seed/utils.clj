@@ -1,13 +1,6 @@
 (ns blueprints.datomic.seed.utils
-  (:require [datomic.api :as d]
-            [clj-time.core :as t]
+  (:require [clj-time.core :as t]
             [clj-time.coerce :as c]))
-
-
-(defn tempid [& [n]]
-  (if (some? n)
-    (d/tempid :db.part/starcity n)
-    (d/tempid :db.part/starcity)))
 
 
 (defn weeks-from-now [n]

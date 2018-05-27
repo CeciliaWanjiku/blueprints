@@ -7,7 +7,8 @@
             [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.date :as date]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 ;; =============================================================================
 ;; Selectors
@@ -68,7 +69,7 @@
   "Produce transaction data required to create an approval entity."
   [approver approvee unit license move-in]
   (let [tz (-> unit unit/property property/time-zone)]
-    {:db/id             (d/tempid :db.part/starcity)
+    {:db/id             (tds/tempid)
      :approval/account  (:db/id approvee)
      :approval/approver (:db/id approver)
      :approval/unit     (:db/id unit)

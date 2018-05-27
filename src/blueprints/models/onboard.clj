@@ -7,7 +7,8 @@
   information required to join the community."
   (:require [clojure.spec.alpha :as s]
             [datomic.api :as d]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -104,7 +105,7 @@
 (defn create
   "Create a new `onboard` entity given an `account`."
   [account]
-  {:db/id           (d/tempid :db.part/starcity)
+  {:db/id           (tds/tempid)
    :onboard/account (:db/id account)})
 
 (s/fdef create

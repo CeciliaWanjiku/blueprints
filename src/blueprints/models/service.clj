@@ -5,7 +5,8 @@
             [clojure.string :as string]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 ;; =============================================================================
 ;; Spec
@@ -396,7 +397,7 @@
                            type          :service.type/service
                            archived      false}}]
    (tb/assoc-some
-    {:db/id                 (d/tempid :db.part/starcity)
+    {:db/id                 (tds/tempid)
      :service/code          code
      :service/name          name
      :service/desc          desc

@@ -1,13 +1,11 @@
 (ns blueprints.server
-  (:require [buddy.auth :as buddy]
-            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
-            [clojure.string :as string]
-            [customs.access :as access]
-            [mount.core :refer [defstate]]
-            [blueprints.config :as config :refer [config]]
-            [blueprints.datomic :refer [conn]]
+  (:require [blueprints.config :as config]
             [blueprints.routes :as routes]
-            [blueprints.teller :refer [teller]]
+            [blueprints.util.auth :refer [unauthorized-handler]]
+            [buddy.auth.backends.token :refer [token-backend]]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [customs.access :as access]
+            [datomic.api :as d]
             [org.httpkit.server :as httpkit]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.format :refer [wrap-restful-format]]
@@ -15,12 +13,43 @@
             [ring.middleware.multipart-params :refer [wrap-multipart-params]]
             [ring.middleware.nested-params :refer [wrap-nested-params]]
             [ring.middleware.params :refer [wrap-params]]
-            [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.session.datomic :refer [datomic-store session->entity]]
-            [ring.util.response :as response]
             [taoensso.timbre :as timbre]
             [toolbelt.core :as tb]))
+
+;; ==============================================================================
+;; auth =========================================================================
+;; ==============================================================================
+
+
+(def ^:private auth-backend
+  (access/auth-backend :unauthorized-handler unauthorized-handler))
+
+
+(def tokens
+  (atom {#uuid "5f89c319-eb62-4bdc-938c-a8e0a3a8f6ca" "admin@test.com"
+         #uuid "c3330689-9c6e-4a1e-9991-98a2c0d1abcc" "applicant@test.com"}))
+
+
+(defn token-authfn
+  [req token]
+  (try
+    (when-let [email (get @tokens (java.util.UUID/fromString token))]
+      (d/entity (d/db (get-in req [:deps :conn])) [:account/email email]))
+    (catch Throwable _ nil)))
+
+
+(comment
+
+  @(org.httpkit.client/get "http://localhost:8083/history/17592186045726"
+                           {:headers {"Authorization" (str "Token " #uuid "5f89c319-eb62-4bdc-938c-a8e0a3a8f6ca")
+                                      "Content-Type"  "application/transit+json"}})
+
+  (:db/id (d/entity (d/db odin.datomic/conn) [:account/email "admin@test.com"]))
+
+  )
+
 
 ;; ==============================================================================
 ;; middleware ===================================================================
@@ -39,7 +68,7 @@
                                   :remote-addr remote-addr}
                                  :user (get-in session [:identity :account/email])))
         {:status 500
-         :body   "Unexpected server error!"}))))
+         :body   {:message "unexpected server error!"}}))))
 
 
 (defn wrap-logging
@@ -56,24 +85,6 @@
     (handler req)))
 
 
-(defn- unauthorized-handler
-  [request metadata]
-  (let [config (get-in request [:deps :config])]
-    (timbre/debug "(AUTH)REQUEST KEYS:" (keys request))
-    (timbre/debug "(AUTH)HEADERS" (keys request))
-    (let [[status msg] (if (buddy/authenticated? request)
-                         [403 "You are not authorized to access this resource."]
-                         [401 "You are not authenticated; please log in."])]
-      (-> (response/response {:message msg})
-          (response/status status)
-          ;; TODO: use appropriate content type based on request
-          (response/content-type "application/json")))))
-
-
-(def ^:private auth-backend
-  (access/auth-backend :unauthorized-handler unauthorized-handler))
-
-
 (defn wrap-deps
   "Inject dependencies (`deps`) into the request."
   [handler deps]
@@ -84,7 +95,8 @@
 (defn app-handler [deps]
   (-> routes/routes
       (wrap-authorization auth-backend)
-      (wrap-authentication auth-backend)
+      (wrap-authentication auth-backend (token-backend {:authfn               token-authfn
+                                                        :unauthorized-handler unauthorized-handler}))
       (wrap-deps deps)
       (wrap-logging)
       (wrap-keyword-params)
@@ -93,30 +105,28 @@
       (wrap-params)
       (wrap-multipart-params)
       (wrap-session {:store        (datomic-store (:conn deps) :session->entity session->entity)
-                     :cookie-name  (config/cookie-name config)
-                     :cookie-attrs {:secure (config/secure-sessions? config)}})
+                     :cookie-name  (config/cookie-name (:config deps))
+                     :cookie-attrs {:secure (config/secure-sessions? (:config deps))}})
       (wrap-exception-handling)
       (wrap-content-type)))
 
 
-;; =============================================================================
-;; State
-;; =============================================================================
+;; ==============================================================================
+;; server =======================================================================
+;; ==============================================================================
 
 
-(defn- start-server [port handler]
-  (timbre/infof ::starting {:port port})
-  (httpkit/run-server handler {:port port :max-body (* 20 1024 1024)}))
+(defn start-server
+  [conn teller graphql config port]
+  (let [handler (app-handler {:conn    conn
+                              :config  config
+                              :teller  teller
+                              :graphql graphql})]
+    (timbre/info ::starting {:port port})
+    (httpkit/run-server handler {:port     port
+                                 :max-body (* 20 1024 1024)})))
 
 
-(defn- stop-server [server]
+(defn stop-server [server]
   (timbre/info ::stopping)
   (server))
-
-
-(defstate web-server
-  :start (->> (app-handler {:conn   conn
-                            :config config
-                            :teller teller})
-              (start-server (config/webserver-port config)))
-  :stop (stop-server web-server))

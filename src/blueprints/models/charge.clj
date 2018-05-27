@@ -3,7 +3,8 @@
   (:require [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -164,7 +165,7 @@
   [account stripe-id amount & {:keys [purpose status invoice-id]
                                :or   {status :charge.status/pending}}]
   (tb/assoc-when
-   {:db/id            (d/tempid :db.part/starcity)
+   {:db/id            (tds/tempid)
     :charge/account   (td/id account)
     :charge/stripe-id stripe-id
     :charge/amount    amount

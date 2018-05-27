@@ -11,6 +11,7 @@
             [blueprints.graphql.resolvers.payment :as payment]
             [blueprints.graphql.resolvers.payment-source :as source]
             [blueprints.graphql.resolvers.property :as property]
+            [blueprints.graphql.resolvers.referral :as referral]
             [blueprints.graphql.resolvers.service :as service]
             [blueprints.graphql.resolvers.unit :as unit]
             [toolbelt.datomic :as td]))
@@ -35,6 +36,7 @@
         order/resolvers
         payment/resolvers
         property/resolvers
+        referral/resolvers
         service/resolvers
         unit/resolvers)
        (reduce

@@ -414,6 +414,19 @@
                    :resolve (:get :license-price/license :license/term)}}}
 
 
+  :referral
+  {:fields {:id       {:type    (non-null :Long)
+                       :resolve (:get :db/id)}
+            :source   {:type    (non-null String)
+                       :resolve (:get :referral/source)}
+            :account  {:type    :account
+                       :resolve (:get :referral/account)}
+            :from     {:type    (non-null :referral_from)
+                       :resolve (:keyword/name :referral/from)}
+            :tour_for {:type    :property
+                       :resolve (:get :referral/tour-for)}}}
+
+
   :service
   {:fields {:id            {:type    (non-null :Long)
                             :resolve (:get :db/id)}

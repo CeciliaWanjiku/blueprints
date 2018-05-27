@@ -1,7 +1,8 @@
 (ns blueprints.datomic.seed.accounts
-  (:require [blueprints.datomic.seed.utils :as utils :refer [tempid]]
+  (:require [blueprints.datomic.seed.utils :as utils]
             [blueprints.models.approval :as approval]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [toolbelt.datomic.schema :as tds]))
 
 ;; =============================================================================
 ;; Helpers
@@ -49,7 +50,7 @@
                   last-name  (rand-last-name)
                   phone      (rand-phone)
                   activated  true}}]
-  {:db/id                     (tempid n)
+  {:db/id                     (tds/tempid)
    :person/first-name         first-name
    :person/last-name          last-name
    :person/phone-number       phone
@@ -68,7 +69,7 @@
 
 
 (defn- mlicense [account license-id unit-id amount]
-  {:db/id                       (tempid)
+  {:db/id                       (tds/tempid)
    :member-license/status       :member-license.status/active
    :member-license/commencement (utils/now)
    :member-license/ends         (utils/weeks-from-now 12)
@@ -89,7 +90,7 @@
         mlicense (mlicense account license-id unit-id 2000.0)]
     [(assoc account :account/licenses (:db/id mlicense))
      mlicense
-     {:db/id            (tempid)
+     {:db/id            (tds/tempid)
       :deposit/account  (:db/id account)
       :deposit/amount   2000.0
       :deposit/due      (utils/weeks-from-now 4)}]))
@@ -102,7 +103,7 @@
 
 
 (defn approval [account approver-id unit-id license-id]
-  {:db/id             (tempid)
+  {:db/id             (tds/tempid)
    :approval/account  (:db/id account)
    :approval/approver approver-id
    :approval/unit     unit-id
@@ -121,14 +122,14 @@
                              :first-name first-name
                              :last-name last-name
                              :email (or email (role-email first-name last-name :account.role/onboarding)))
-        application {:db/id               (tempid)
+        application {:db/id               (tds/tempid)
                      :application/status  :application.status/approved
                      :application/license license-id}]
     [(assoc account :account/application (:db/id application))
-     {:db/id           (utils/tempid)
+     {:db/id           (tds/tempid)
       :onboard/account (:db/id account)}
      application
-     {:db/id           (tempid)
+     {:db/id           (tds/tempid)
       :deposit/account (:db/id account)
       :deposit/amount  2000.0
       :deposit/due     (utils/weeks-from-now 4)}
@@ -160,7 +161,7 @@
   [& {:keys [first-name last-name email n]
       :or   {first-name (rand-first-name)
              last-name  (rand-last-name)}}]
-  (let [application {:db/id              (utils/tempid)
+  (let [application {:db/id              (tds/tempid)
                      :application/status :application.status/in-progress}]
     [(-> (account :account.role/applicant
                   :n n

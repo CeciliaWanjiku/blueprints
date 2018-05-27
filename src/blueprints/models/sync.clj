@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [ref])
   (:require [clojure.spec.alpha :as s]
             [datomic.api :as d]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 ;; ==============================================================================
 ;; selectors ====================================================================
@@ -57,7 +58,7 @@
 (defn create
   "Create a new `sync` entity given the entity (`ref`) to sync."
   [ref ext-id service]
-  {:db/id            (d/tempid :db.part/starcity)
+  {:db/id            (tds/tempid)
    :sync/ext-id      ext-id
    :sync/ref         (td/id ref)
    :sync/service     service

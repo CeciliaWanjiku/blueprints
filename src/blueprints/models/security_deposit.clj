@@ -4,7 +4,8 @@
             [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -247,7 +248,7 @@
   Only requires an `amount` (and `account` of course), since other details are
   filled in by `account` during the onboarding flow."
   [account amount]
-  {:db/id           (d/tempid :db.part/starcity)
+  {:db/id           (tds/tempid)
    :deposit/account (td/id account)
    :deposit/amount  (float amount)})
 

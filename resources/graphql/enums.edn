@@ -55,6 +55,10 @@
   {:description "Payment status."
    :values      [:due :canceled :paid :pending :failed :refunded]}
 
+  :referral_from
+  {:description "Place within the application that the referral came from."
+   :values      [:apply :tour]}
+
   :rent_status
   {:description "Rent payment statuses."
    :values      [:due :overdue :pending :paid]}

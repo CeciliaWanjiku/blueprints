@@ -24,6 +24,9 @@
   :properties      {:type    (list :property)
                     :args    {}
                     :resolve :property/query}
+  :referrals       {:type    (list :referral)
+                    :args    {}
+                    :resolve :referrals/query}
   :service         {:type    :service
                     :args    {:id {:type (non-null :Long)}}
                     :resolve :service/entry}

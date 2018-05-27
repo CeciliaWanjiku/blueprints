@@ -9,7 +9,7 @@
                  ;; web
                  [ring "1.6.3"]
                  [starcity/datomic-session-store "0.1.0"]
-                 [starcity/customs "1.0.0"]
+                 [starcity/customs "1.1.0"]
                  [http-kit "2.3.0"]
                  [compojure "1.6.1"]
                  [ring-middleware-format "0.7.2"]

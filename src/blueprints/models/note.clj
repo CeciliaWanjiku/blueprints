@@ -4,7 +4,8 @@
             [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.core :as tb]
-            [toolbelt.datomic :as td]))
+            [toolbelt.datomic :as td]
+            [toolbelt.datomic.schema :as tds]))
 
 
 ;; =============================================================================
@@ -158,7 +159,7 @@
   [subject content & {:keys [author ticket? assigned-to]}]
   (let [status (when (or ticket? assigned-to) :ticket.status/open)]
     (tb/assoc-when
-     {:db/id        (d/tempid :db.part/starcity)
+     {:db/id        (tds/tempid)
       :note/subject subject
       :note/content content
       :note/uuid    (d/squuid)}

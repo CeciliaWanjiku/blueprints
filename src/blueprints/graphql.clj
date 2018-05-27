@@ -1,5 +1,6 @@
 (ns blueprints.graphql
-  (:require [clj-time.coerce :as c]
+  (:require [blueprints.graphql.resolvers :as resolvers]
+            [clj-time.coerce :as c]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as string]
@@ -7,8 +8,6 @@
             [com.walmartlabs.lacinia.schema :as schema]
             [com.walmartlabs.lacinia.util :as util]
             [datomic.api :as d]
-            [mount.core :refer [defstate]]
-            [blueprints.graphql.resolvers :as resolvers]
             [taoensso.timbre :as timbre]))
 
 (defn- parse-keyword [s]
@@ -49,7 +48,7 @@
        (apply merge custom-scalars)))
 
 
-(defstate schema
-  :start (-> entire-schema
-             (util/attach-resolvers (resolvers/resolvers))
-             schema/compile))
+(defn compile-schema []
+  (-> entire-schema
+      (util/attach-resolvers (resolvers/resolvers))
+      schema/compile))
