@@ -4,7 +4,7 @@
             [clojure.test :refer :all]
             [clojure.string :as string]))
 
-(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic.schema/conform-schema))
 
 
 (deftest community-schema-conformed

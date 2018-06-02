@@ -42,7 +42,7 @@
      license]))
 
 
-(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic.schema/conform-schema))
 
 
 (defn speculate [db & tx-data]

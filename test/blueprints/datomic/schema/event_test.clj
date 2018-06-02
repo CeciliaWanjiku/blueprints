@@ -3,7 +3,7 @@
             [clojure.test :refer :all]
             [toolbelt.datomic.test :as tdt :refer [test-attr]]))
 
-(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic.schema/conform-schema))
 
 
 (deftest event-schema-conformed

@@ -5,7 +5,7 @@
             [clojure.test :refer :all]
             [datomic.api :as d]))
 
-(use-fixtures :once (tdt/conn-fixture blueprints.datomic/conform-schema))
+(use-fixtures :once (tdt/conn-fixture blueprints.datomic.schema/conform-schema))
 
 ;; We don't need to check for the presence of all entities in our seed sets due
 ;; to the transactional aspect of Datomic--if some of the data is there, all of
