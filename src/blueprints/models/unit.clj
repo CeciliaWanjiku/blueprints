@@ -137,7 +137,8 @@
 (defn create
   "Create a unit, given a community's `code` and a unit number (`n`)."
   [code n]
-  {:unit/name (str code "-" n)})
+  {:db/id     (d/tempid :db.part/starcity)
+   :unit/name (str code "-" n)})
 
 
 (defn create-community-units
