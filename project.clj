@@ -32,7 +32,8 @@
                  [starcity/toolbelt-core "0.5.0"]
                  [starcity/toolbelt-date "0.3.0"]
                  [mount "0.1.12"]
-                 [clj-time "0.14.4"]]
+                 [clj-time "0.14.4"]
+                 [ring-cors "0.1.12"]]
 
 
   :jvm-opts ["-server"

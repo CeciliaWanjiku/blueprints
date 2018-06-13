@@ -1,6 +1,7 @@
 (ns blueprints.server
   (:require [blueprints.config :as config]
             [blueprints.routes :as routes]
+            [blueprints.models.api-key :as api-key]
             [blueprints.util.auth :refer [unauthorized-handler]]
             [buddy.auth.backends.token :refer [token-backend]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
@@ -8,6 +9,7 @@
             [datomic.api :as d]
             [org.httpkit.server :as httpkit]
             [ring.middleware.content-type :refer [wrap-content-type]]
+            [ring.middleware.cors :refer [wrap-cors]]
             [ring.middleware.format :refer [wrap-restful-format]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.multipart-params :refer [wrap-multipart-params]]
@@ -27,28 +29,21 @@
   (access/auth-backend :unauthorized-handler unauthorized-handler))
 
 
-(def tokens
-  (atom {#uuid "5f89c319-eb62-4bdc-938c-a8e0a3a8f6ca" "admin@test.com"
-         #uuid "c3330689-9c6e-4a1e-9991-98a2c0d1abcc" "applicant@test.com"}))
-
-
 (defn token-authfn
   [req token]
-  (try
-    (when-let [email (get @tokens (java.util.UUID/fromString token))]
-      (d/entity (d/db (get-in req [:deps :conn])) [:account/email email]))
-    (catch Throwable _ nil)))
-
-
-(comment
-
-  @(org.httpkit.client/get "http://localhost:8083/history/17592186045726"
-                           {:headers {"Authorization" (str "Token " #uuid "5f89c319-eb62-4bdc-938c-a8e0a3a8f6ca")
-                                      "Content-Type"  "application/transit+json"}})
-
-  (:db/id (d/entity (d/db odin.datomic/conn) [:account/email "admin@test.com"]))
-
-  )
+  (let [db (d/db (get-in req [:deps :conn]))]
+    (try
+      (when-let [key (api-key/by-id db (java.util.UUID/fromString token))]
+        (or (api-key/account key)
+            ;; TODO: Ideally there'll be an abstracted datastructure
+            ;; representing the current `identity` that isn't coupled to the
+            ;; notion of an "account"
+            {:api-key/id         key
+             :account/email      ""
+             :account/first-name (api-key/name key)
+             :account/last-name  ""
+             :account/role       (api-key/role key)}))
+      (catch Throwable _ nil))))
 
 
 ;; ==============================================================================
@@ -75,6 +70,7 @@
   "Middleware to log requests."
   [handler]
   (fn [{:keys [deps params uri request-method session remote-addr] :as req}]
+    (timbre/info "IDENTITY -------------------------- " (:identity session))
     (timbre/info :web/request
                  (tb/assoc-when
                   {:uri         uri
@@ -89,14 +85,20 @@
   "Inject dependencies (`deps`) into the request."
   [handler deps]
   (fn [req]
+    (timbre/info "SESSION --------------------------- " (:session req))
     (handler (assoc req :deps deps))))
 
 
 (defn app-handler [deps]
   (-> routes/routes
+      ;; #_(re-pattern (config/root-domain odin.config/config #_(:config deps)))
       (wrap-authorization auth-backend)
-      (wrap-authentication auth-backend (token-backend {:authfn               token-authfn
-                                                        :unauthorized-handler unauthorized-handler}))
+      (wrap-authentication auth-backend
+                           (token-backend {:authfn               token-authfn
+                                           :unauthorized-handler unauthorized-handler}))
+      ;; NOTE: This works, but the authentication isn't working
+      (wrap-cors :access-control-allow-origin [#".*"]
+                 :access-control-allow-methods [:get :put :post :delete :options])
       (wrap-deps deps)
       (wrap-logging)
       (wrap-keyword-params)
@@ -105,8 +107,9 @@
       (wrap-params)
       (wrap-multipart-params)
       (wrap-session {:store        (datomic-store (:conn deps) :session->entity session->entity)
-                     :cookie-name  (config/cookie-name (:config deps))
-                     :cookie-attrs {:secure (config/secure-sessions? (:config deps))}})
+                     :cookie-name  (config/session-name (:config deps))
+                     :cookie-attrs {:secure (config/secure-sessions? (:config deps))
+                                    :domain (config/session-domain (:config deps))}})
       (wrap-exception-handling)
       (wrap-content-type)))
 

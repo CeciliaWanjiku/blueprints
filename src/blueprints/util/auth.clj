@@ -5,10 +5,11 @@
 
 (defn unauthorized-handler
   [request metadata]
-  (let [config (get-in request [:deps :config])]
-    (let [[status msg] (if (buddy/authenticated? request)
-                         [403 "You are not authorized to access this resource."]
-                         [401 "You are not authenticated; please log in."])]
-      (-> (response/response {:message msg})
-          (response/status status)
-          (response/content-type (:content-type request "application/json"))))))
+  (let [config       (get-in request [:deps :config])
+        [status msg] (if (buddy/authenticated? request)
+                       [403 "You are not authorized to access this resource."]
+                       [401 "You are not authenticated; please log in."])
+        ctype        (get-in request [:headers "content-type"] "application/transit+json")]
+    (-> (response/response {:message msg})
+        (response/status status)
+        (response/content-type ctype))))

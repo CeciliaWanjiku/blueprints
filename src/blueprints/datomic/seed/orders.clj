@@ -2,7 +2,8 @@
   (:require [blueprints.datomic.seed.utils :as utils]
             [blueprints.models.order :as order]
             [clojure.string :as string]
-            [datomic.api :as d]))
+            [datomic.api :as d]
+            [toolbelt.datomic.schema :as tds]))
 
 (defn rand-int-to-5
   "random number between 1 and 5 "

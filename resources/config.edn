@@ -1,7 +1,8 @@
-{:webserver {:port            #or [#env WEB_PORT 8083]
-             :cookie-name     "starcity-session"
-             :secure-sessions #profile {:prod    true
-                                        :default false}}
+{:webserver {:port    #or [#env WEB_PORT 8083]
+             :session {:name   "starcity-session"
+                       :secure #profile {:prod    true
+                                         :default false}
+                       :domain #or [#env COOKIE_DOMAIN "localhost"]}}
 
  :datomic {:partition :db.part/starcity
            :uri       #or [#env DATOMIC_URI

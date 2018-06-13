@@ -10,7 +10,6 @@
                                 :profile  (:env (mount/args))})))
 
 
-
 ;; ==============================================================================
 ;; webserver ====================================================================
 ;; ==============================================================================
@@ -22,16 +21,22 @@
   (tb/str->int (get-in config [:webserver :port])))
 
 
-(defn cookie-name
-  "Session cookie name."
+(defn session-name
+  "The name of the session cookie."
   [config]
-  (get-in config [:webserver :cookie-name]))
+  (get-in config [:webserver :session :name]))
 
 
 (defn secure-sessions?
-  "Should session cookies be secure?"
+  "Should sessions be secure?"
   [config]
-  (get-in config [:webserver :secure-sessions]))
+  (get-in config [:webserver :session :secure]))
+
+
+(defn session-domain
+  "The domain for the session cookie."
+  [config]
+  (get-in config [:webserver :session :domain]))
 
 
 ;; ==============================================================================
