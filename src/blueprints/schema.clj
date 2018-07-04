@@ -20,6 +20,7 @@
             [blueprints.schema.order :as order]
             [blueprints.schema.property :as property]
             [blueprints.schema.referral :as referral]
+            [blueprints.schema.region :as region]
             [blueprints.schema.security-deposit :as sd]
             [blueprints.schema.service :as service]
             [blueprints.schema.session :as session]
@@ -29,6 +30,7 @@
             [blueprints.schema.suggestion :as suggestion]
             [blueprints.schema.sync :as sync]
             [blueprints.schema.tag :as tag]
+            [blueprints.schema.tipe :as tipe]
             [blueprints.schema.transaction :as transaction]
             [io.rkn.conformity :as c]))
 
@@ -59,6 +61,7 @@
                         order/norms
                         property/norms
                         referral/norms
+                        region/norms
                         sd/norms
                         service/norms
                         session/norms
@@ -68,6 +71,7 @@
                         suggestion/norms
                         sync/norms
                         tag/norms
+                        tipe/norms
                         transaction/norms]
                        (apply juxt))]
     (apply merge (gen-norms part))))

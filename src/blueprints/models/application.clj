@@ -22,6 +22,17 @@
     :member-application.status/rejected})
 
 
+(s/def ::occupancies
+  #{:application.occupancy/single
+    :application.occupancy/double})
+
+
+(s/def ::move-in-ranges
+  #{:application.move-in-range/date
+    :application.move-in-range/asap
+    :application.move-in-range/flexible})
+
+
 ;; =============================================================================
 ;; Selectors
 ;; =============================================================================
@@ -171,6 +182,77 @@
         :ret (s/+ (s/keys :req-un [:fitness/label :fitness/key :fitness/value])))
 
 
+(defn move-in-range
+  "Does the applicant wish to move in on a specific future date, as soon as a unit
+  is available, or are they flexible on their move-in date?"
+  [application]
+  (:application/move-in-range application))
+
+(s/fdef move-in-range
+        :args (s/cat :application td/entity?)
+        :ret (s/nilable ::move-in-ranges))
+
+
+(defn occupancy
+  "How many adults are applying to share a unit?"
+  [application]
+  (:application/occupancy application))
+
+(s/fdef occupancy
+        :args (s/cat :application td/entity?)
+        :ret (s/nilable ::occupancies))
+
+
+(defn cooccupant
+  "The account of this applicant's co-applicant."
+  [application]
+  (:account/cooccupant (account application)))
+
+(s/fdef cooccupant
+        :args (s/cat :application td/entityd?)
+        :ret (s/nilable td/entityd?))
+
+
+(defn cosigner
+  "The account of this applicant's co-signer."
+  [application]
+  (:application/cosigner (account application)))
+
+(s/fdef cosigner
+        :args (s/cat :application td/entityd?)
+        :ret (s/nilable td/entityd?))
+
+
+(defn about
+  "The applicant's answer to the prompt 'Tell us about you'."
+  [application]
+  (:application/about application))
+
+(s/fdef about
+        :args (s/cat :application td/entityd?)
+        :ret (s/nilable string?))
+
+
+(defn pet-name
+  "The name of this applicant's pet."
+  [application]
+  (:pet/name (pet application)))
+
+(s/fdef pet-name
+        :args (s/cat :application td/entityd?)
+        :ret (s/nilable string?))
+
+
+(defn pet-about
+  "Information about the non-dog pet."
+  [application]
+  (:pet/about (pet application)))
+
+(s/fdef pet-about
+        :args (s/cat :application td/entityd?)
+        :ret (s/nilable string?))
+
+
 ;; =============================================================================
 ;; Predicates
 ;; =============================================================================
@@ -245,6 +327,17 @@
 (s/fdef submit
         :args (s/cat :application td/entity?)
         :ret vector?)
+
+
+(defn create
+  "Create a new member application."
+  []
+  {:db/id (d/tempid :db.part/starcity)
+   :application/status :application.status/in-progress})
+
+(s/fdef create
+        :args (s/cat)
+        :ret td/entityd?)
 
 
 ;; =============================================================================
