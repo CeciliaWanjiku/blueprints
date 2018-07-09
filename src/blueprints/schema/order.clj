@@ -197,6 +197,15 @@
        "Reference to a teller subscription."]))]))
 
 
+(def ^{:added "3.0.1"} add-line-item-types
+  (s/generate-schema
+   [(s/schema
+     line-item
+     (s/fields
+      [types :keyword :many :indexed
+       "Types of line-item."]))]))
+
+
 (defn norms [part]
   {:schema.order/add-schema-04132017
    {:txes [schema]}
@@ -222,4 +231,7 @@
    {:txes [add-subscription-reference]}
 
    :schema.order/add-order-attached-04242018
-   {:txes [add-order-attached]}})
+   {:txes [add-order-attached]}
+
+   :schema.order/add-line-item-type-06152018
+   {:txes [add-line-item-types]}})

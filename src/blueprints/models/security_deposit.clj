@@ -167,6 +167,16 @@
                              :deposit.refund-status/failed}))
 
 
+(defn line-items
+  "The line-items of the deposit."
+  [deposit]
+  (:deposit/lines deposit))
+
+(s/fdef line-items
+        :args (s/cat :deposit td/entity?)
+        :ret (s/* td/entityd?))
+
+
 ;; =============================================================================
 ;; Predicates
 ;; =============================================================================
