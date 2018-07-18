@@ -203,7 +203,9 @@
      line-item
      (s/fields
       [types :keyword :many :indexed
-       "Types of line-item."]))]))
+       "Types of line-item."]
+      [subtypes :keyword :many :indexed
+       "Subtypes of line-item."]))]))
 
 
 (defn norms [part]
