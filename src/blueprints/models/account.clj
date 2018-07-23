@@ -4,7 +4,9 @@
             [clojure.spec.alpha :as s]
             [datomic.api :as d]
             [toolbelt.datomic :as td]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [teller.customer :as tcustomer]
+            [teller.core :as teller]))
 
 ;; =============================================================================
 ;; Spec
@@ -294,6 +296,17 @@
 
 (s/fdef can-approve?
         :args (s/cat :account td/entity?)
+        :ret boolean?)
+
+
+(defn has-payout-account?
+  [teller account]
+  (some? (when-let [c (tcustomer/by-account teller account)]
+           (tcustomer/payout-account-id c))))
+
+(s/fdef has-payout-account?
+        :args (s/cat :teller teller/connection?
+                     :deposit td/entityd?)
         :ret boolean?)
 
 
