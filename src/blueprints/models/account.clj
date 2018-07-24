@@ -298,11 +298,11 @@
 
 (defn has-payout-account?
   [account]
-  (some? (when-let [c (:customer/_account account)]
+  (some? (when-let [c (first (:customer/_account account))]
            (:customer/payout-account-id c))))
 
 (s/fdef has-payout-account?
-        :args (s/cat :deposit td/entityd?)
+        :args (s/cat :account td/entity?)
         :ret boolean?)
 
 

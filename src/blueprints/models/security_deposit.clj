@@ -200,8 +200,8 @@
   "Total deposit refund amount"
   [deposit]
   (let [deposit-amount (or (amount deposit) 0)
-        charges        (line-item-by-subtype deposit :refund-charge)
-        credits        (line-item-by-subtype deposit :refund-credit)
+        charges        (line-items-by-subtype deposit :refund-charge)
+        credits        (line-items-by-subtype deposit :refund-credit)
         charge-amount  (sum-amount charges)
         credit-amount  (sum-amount credits)
         refund-amount  (-> deposit-amount
@@ -281,7 +281,7 @@
        (false? (is-refunded? deposit))))
 
 (s/fdef is-refundable?
-        :args (s/cat :deposit td/entityd?)
+        :args (s/cat :deposit td/entity?)
         :ret boolean?)
 
 
