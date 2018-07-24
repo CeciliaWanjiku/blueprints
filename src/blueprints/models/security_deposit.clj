@@ -3,14 +3,8 @@
   (:require [blueprints.models.payment :as payment]
             [clojure.spec.alpha :as s]
             [datomic.api :as d]
-            [toolbelt.core :as tb]
             [toolbelt.datomic :as td]
-            [teller.customer :as tcustomer]
-            [teller.core :as teller]
-            [taoensso.timbre :as timbre]
-            [blueprints.models.security-deposit :as deposit]
             [blueprints.models.account :as account]))
-
 
 ;; =============================================================================
 ;; Spec
@@ -276,20 +270,18 @@
 
 (defn is-refundable?
   "Can this security deposit be refunded via Stripe?"
-  [teller deposit]
-  (let [customer (tcustomer/by-account teller (account deposit))]
-    (and (nil? (refund-status deposit))
-         (not (empty? (payments deposit)))
-         (let [charge-total (->> (payments deposit)
-                                 (filter #(payment/paid? %1))
-                                 (reduce #(+ %1 (payment/amount %2)) 0))]
-           (= (amount deposit) charge-total))
-         (account/has-payout-account? teller (account deposit))
-         (false? (is-refunded? deposit)))))
+  [deposit]
+  (and (nil? (refund-status deposit))
+       (not (empty? (payments deposit)))
+       (let [charge-total (->> (payments deposit)
+                               (filter #(payment/paid? %1))
+                               (reduce #(+ %1 (payment/amount %2)) 0))]
+         (= (amount deposit) charge-total))
+       (account/has-payout-account? (account deposit))
+       (false? (is-refunded? deposit))))
 
 (s/fdef is-refundable?
-        :args (s/cat :teller teller/connection?
-                     :deposit td/entityd?)
+        :args (s/cat :deposit td/entityd?)
         :ret boolean?)
 
 
