@@ -3,8 +3,9 @@
   (:require [blueprints.models.payment :as payment]
             [clojure.spec.alpha :as s]
             [datomic.api :as d]
-            [toolbelt.datomic :as td]
-            [blueprints.models.account :as account]))
+            [toolbelt.core :as tb]
+            [toolbelt.datomic :as td]))
+
 
 ;; =============================================================================
 ;; Spec
@@ -200,8 +201,8 @@
   "Total deposit refund amount"
   [deposit]
   (let [deposit-amount (or (amount deposit) 0)
-        charges        (line-items-by-subtype deposit :refund-charge)
-        credits        (line-items-by-subtype deposit :refund-credit)
+        charges        (line-item-by-subtype deposit :refund-charge)
+        credits        (line-item-by-subtype deposit :refund-credit)
         charge-amount  (sum-amount charges)
         credit-amount  (sum-amount credits)
         refund-amount  (-> deposit-amount
@@ -256,34 +257,19 @@
         :ret boolean?)
 
 
-(defn is-refunded?
-  "Has this deposit refund proccess been initiated or successful?"
-  [deposit]
-  (some?
-   (#{:deposit.refund-status/successful
-      :deposit.refund-status/initiated} (:deposit/refund-status deposit))))
-
-(s/fdef is-refunded?
-        :args (s/cat :deposit td/entity?)
-        :ret boolean?)
-
-
 (defn is-refundable?
   "Can this security deposit be refunded via Stripe?"
   [deposit]
   (and (nil? (refund-status deposit))
-       (not (empty? (payments deposit)))
+       (seq (payments deposit))
        (let [charge-total (->> (payments deposit)
-                               (filter #(payment/paid? %1))
+                               (filter #(and (payment/charge? %1) (payment/paid? %1)))
                                (reduce #(+ %1 (payment/amount %2)) 0))]
-         (= (amount deposit) charge-total))
-       (account/has-payout-account? (account deposit))
-       (false? (is-refunded? deposit))))
+         (= (amount deposit) charge-total))))
 
 (s/fdef is-refundable?
         :args (s/cat :deposit td/entity?)
         :ret boolean?)
-
 
 
 ;; =============================================================================
