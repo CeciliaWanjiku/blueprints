@@ -1,10 +1,9 @@
 (ns blueprints.models.account
   (:require [blueprints.models.application :as application]
-            [blueprints.models.approval :as approval]
             [clojure.spec.alpha :as s]
+            [clojure.string :as string]
             [datomic.api :as d]
-            [toolbelt.datomic :as td]
-            [clojure.string :as string]))
+            [toolbelt.datomic :as td]))
 
 ;; =============================================================================
 ;; Spec
@@ -293,6 +292,16 @@
     (and (application/submitted? application) (applicant? account))))
 
 (s/fdef can-approve?
+        :args (s/cat :account td/entity?)
+        :ret boolean?)
+
+
+(defn has-payout-account?
+  [account]
+  (some? (when-let [c (first (:customer/_account account))]
+           (:customer/payout-account-id c))))
+
+(s/fdef has-payout-account?
         :args (s/cat :account td/entity?)
         :ret boolean?)
 
