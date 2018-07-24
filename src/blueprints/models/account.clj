@@ -1,12 +1,9 @@
 (ns blueprints.models.account
   (:require [blueprints.models.application :as application]
-            [blueprints.models.approval :as approval]
             [clojure.spec.alpha :as s]
-            [datomic.api :as d]
-            [toolbelt.datomic :as td]
             [clojure.string :as string]
-            [teller.customer :as tcustomer]
-            [teller.core :as teller]))
+            [datomic.api :as d]
+            [toolbelt.datomic :as td]))
 
 ;; =============================================================================
 ;; Spec
@@ -300,13 +297,12 @@
 
 
 (defn has-payout-account?
-  [teller account]
-  (some? (when-let [c (tcustomer/by-account teller account)]
-           (tcustomer/payout-account-id c))))
+  [account]
+  (some? (when-let [c (:customer/_account account)]
+           (:customer/payout-account-id c))))
 
 (s/fdef has-payout-account?
-        :args (s/cat :teller teller/connection?
-                     :deposit td/entityd?)
+        :args (s/cat :deposit td/entityd?)
         :ret boolean?)
 
 
