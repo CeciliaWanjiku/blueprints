@@ -134,6 +134,15 @@
      :db/ident :deposit.refund-status/failed}]))
 
 
+(def ^{:added "2.6.1"} add-lines
+  (s/generate-schema
+   [(s/schema
+     deposit
+     (s/fields
+      [lines :ref :many :indexed :component
+       "Line-items attached to this deposit's refund."]))]))
+
+
 (defn norms [part]
   {:schema/add-security-deposit-schema-8-18-16
    {:txes [(concat schema
@@ -158,4 +167,7 @@
                :schema.security-deposit/improve-charges-attr-02-14-17]}
 
    :schema.security-deposit/add-refund-status-07272017
-   {:txes [(add-refund-status part)]}})
+   {:txes [(add-refund-status part)]}
+
+   :schema.security-deposit/add-lines-06152018
+   {:txes [add-lines]}})

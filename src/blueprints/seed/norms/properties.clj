@@ -92,6 +92,13 @@
          (d/entity db [:property/internal-name "2072mission"]))))
 
 
+(def ^{:added "2.7.0"} add-copy-doc-ids
+  [{:db/id            [:property/code "52gilbert"]
+    :tipe/document-id "5b1edd5fa98abb0013cb686c"}
+   {:db/id            [:property/code "2072mission"]
+    :tipe/document-id "5b2aa642175f970013b875d7"}])
+
+
 (defn norms [conn part]
   (merge
    {}
@@ -108,4 +115,8 @@
        :requires [:blueprints.seed/add-initial-properties]}
       :blueprints.seed/add-deposit-connect-ids
       {:txes     [add-deposit-connect-ids]
+       :requires [:blueprints.seed/add-initial-properties]}
+
+      :blueprints.seed/add-copy-doc-ids-06122018
+      {:txes     [add-copy-doc-ids]
        :requires [:blueprints.seed/add-initial-properties]}})))
