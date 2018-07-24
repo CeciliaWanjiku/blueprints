@@ -177,6 +177,42 @@
         :ret (s/* td/entityd?))
 
 
+(defn line-items-by-subtype
+  [deposit subtype]
+  (filterv
+   (comp #(some #{subtype} %) :line-item/subtypes)
+   (line-items deposit)))
+
+
+(defn- sum-amount [items]
+  (reduce
+   (fn [sum item]
+     (cond
+       (number? (:price item))
+       (+ sum (:price item))
+
+       :else
+       sum))
+   0
+   items))
+
+
+(defn refund-amount
+  "Total deposit refund amount"
+  [deposit]
+  (let [deposit-amount (or (amount deposit) 0)
+        charges        (line-item-by-subtype deposit :refund-charge)
+        credits        (line-item-by-subtype deposit :refund-credit)
+        charge-amount  (sum-amount charges)
+        credit-amount  (sum-amount credits)
+        refund-amount  (-> deposit-amount
+                           (- charge-amount)
+                           (+ credit-amount))]
+    (if (number? refund-amount)
+      refund-amount
+      0)))
+
+
 ;; =============================================================================
 ;; Predicates
 ;; =============================================================================
