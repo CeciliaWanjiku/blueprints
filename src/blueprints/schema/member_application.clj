@@ -203,7 +203,7 @@
        "Description of how the pet will be taken care of during the day."]))]))
 
 
-(defn- ^{:added "2.7.0"} add-ptm-attrubutes [part]
+(defn- ^{:added "2.7.0"} add-ptm-attributes [part]
   (concat
    (s/generate-schema
     [(s/schema
@@ -218,7 +218,10 @@
 
        [about :string :fulltext
         "The applicant's description of themselves. Their hopes, their dreams,
-        their goals, their fears and insecurities."]))
+        their goals, their fears and insecurities."]
+
+       [income :ref :component :indexed :many
+        "The applicant's proof of income."]))
      (s/schema
       pet
       (s/fields
@@ -283,4 +286,4 @@
    {:txes [add-pet-attrs-06132017]}
 
    :schema.member-application/add-ptm-attrs-06282018
-   {:txes [(add-ptm-attrubutes part)]}})
+   {:txes [(add-ptm-attributes part)]}})
