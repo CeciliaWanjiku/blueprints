@@ -188,8 +188,8 @@
   (reduce
    (fn [sum item]
      (cond
-       (number? (:price item))
-       (+ sum (:price item))
+       (number? (:line-item/price item))
+       (+ sum (:line-item/price item))
 
        :else
        sum))
