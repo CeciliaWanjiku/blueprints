@@ -9,7 +9,7 @@
             [blueprints.schema.cmd :as cmd]
             [blueprints.schema.community-safety :as cs]
             [blueprints.schema.event :as event]
-            [blueprints.schema.income-file :as if]
+            [blueprints.schema.file :as file]
             [blueprints.schema.license :as license]
             [blueprints.schema.member-application :as ma]
             [blueprints.schema.member-license :as ml]
@@ -50,7 +50,7 @@
                         cs/norms
                         cmd/norms
                         event/norms
-                        if/norms
+                        file/norms
                         license/norms
                         ma/norms
                         ml/norms

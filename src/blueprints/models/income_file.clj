@@ -1,9 +1,11 @@
 (ns blueprints.models.income-file
   (:require [datomic.api :as d]))
 
+
 ;; =============================================================================
 ;; Transactions
 ;; =============================================================================
+
 
 (defn create
   "Produce transaction data to create a new income file."
@@ -13,9 +15,11 @@
    :income-file/path         path
    :income-file/size         (long size)})
 
+
 ;; =============================================================================
 ;; Queries
 ;; =============================================================================
+
 
 (defn by-account
   "Fetch the income files for this account."
