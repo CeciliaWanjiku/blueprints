@@ -29,7 +29,7 @@
 
 (defn property
   [part name internal-name available-on address licenses units
-   & {:keys [managed-account-id ops-fee tours slack-channel]
+   & {:keys [managed-account-id ops-fee tours slack-channel tipe-document-id cover-image-url]
       :or   {tours false}}]
   (tb/assoc-when
    {:db/id                  (d/tempid part)
@@ -41,7 +41,9 @@
     :property/tours         tours}
    :slack/channel slack-channel
    :property/managed-account-id managed-account-id
-   :property/ops-fee ops-fee))
+   :property/ops-fee ops-fee
+   :tipe/document-id tipe-document-id
+   :property/cover-image-url cover-image-url))
 
 ;; =============================================================================
 ;; Meat
@@ -99,6 +101,41 @@
     :tipe/document-id "5b2aa642175f970013b875d7"}])
 
 
+(defn ^{:added "2.7.1"} add-additional-communities
+  "Ensure that there is seed data to represent every community that is in
+  operation (in real life) as of August 2018"
+  [conn part]
+  (let [licenses (partial property-licenses conn)]
+    [(property part "SoMa South Park"
+               "414bryant"
+               #inst "2018-05-01T00:00:00.000-00:00"
+               (address "414 Bryant St.")
+               (licenses [1 2200.0] [3 2200.0] [6 2150.0] [12 2100.0])
+               (units "414bryant" 15)
+               :slack-channel "#414-bryant"
+               :tipe-document-id "5b1e8b2520003b0013f1ffb8"
+               :cover-image-url "https://s3-us-west-2.amazonaws.com/starcity-images/communities/covers/285873023311132/sp-navbar.jpg")
+     (property part "North Beach"
+               "6nottingham"
+               #inst "2018-01-15T00:00:00.000-00:00"
+               (address "6 Nottingham St.")
+               (licenses [1 2200.0] [3 2200.0] [6 2150.0] [12 2100.0])
+               (units "6nottingham" 11)
+               :slack-channel "#6-nottingham"
+               :tipe-document-id "5b223b644e888200135a1641"
+               :cover-image-url "https://s3-us-west-2.amazonaws.com/starcity-images/6nottingham.jpg")
+     (property part "Venice Beach"
+               "29navy"
+               #inst "2018-01-15T00:00:00.000-00:00"
+               {:address/lines "29 Navy St."
+                :address/city  "Venice"}
+               (licenses [1 2200.0] [3 2200.0] [6 2150.0] [12 2100.0])
+               (units "29navy" 31)
+               :slack-channel "#29-navy"
+               :tipe-document-id "5b47b387e37c18001338c989"
+               :cover-image-url "https://s3-us-west-2.amazonaws.com/starcity-images/communities/covers/285873023341680/venice-beach-exterior.jpg")]))
+
+
 (defn norms [conn part]
   (merge
    {}
@@ -119,4 +156,7 @@
 
       :blueprints.seed/add-copy-doc-ids-06122018
       {:txes     [add-copy-doc-ids]
-       :requires [:blueprints.seed/add-initial-properties]}})))
+       :requires [:blueprints.seed/add-initial-properties]}
+
+      :blueprints.seed/add-additional-communities-08132018
+      {:txes [(add-additional-communities conn part)]}})))
