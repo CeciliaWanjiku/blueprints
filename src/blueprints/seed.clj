@@ -3,7 +3,6 @@
   properly (seeding). This namespace provides a function `conform` that applies
   all unapplied seed operations."
   (:require [blueprints.seed.norms
-             [catalogues :as catalogues]
              [licenses :as licenses]
              [properties :as properties]
              [services :as services]]
@@ -27,9 +26,6 @@
 (defn- phase-2 [conn part]
   (merge (services/norms conn part)))
 
-(defn- phase-3 [conn part]
-  (merge (catalogues/norms conn part)))
-
 ;; =============================================================================
 ;; API
 ;; =============================================================================
@@ -39,5 +35,4 @@
   [conn part]
   (c/ensure-conforms conn (phase-0 conn part))
   (c/ensure-conforms conn (phase-1 conn part))
-  (c/ensure-conforms conn (phase-2 conn part))
-  (c/ensure-conforms conn (phase-3 conn part)))
+  (c/ensure-conforms conn (phase-2 conn part)))
