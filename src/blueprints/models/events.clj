@@ -53,7 +53,7 @@
 
 (s/fdef create-collaborator
         :args (s/cat :email string?
-                     :type #{"investment" "community-partnership" "other" "move-in"}
+                     :type #{"move-in" "invest" "vendor" "location-ideas" "other"}
                      :message string?)
         :ret map?)
 
