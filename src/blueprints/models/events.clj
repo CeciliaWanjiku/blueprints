@@ -1,4 +1,4 @@
-(ns blueprints.models.events
+   (ns blueprints.models.events
   (:require [blueprints.models.event :as event]
             [blueprints.models.note :as note]
             [clojure.spec.alpha :as s]
@@ -53,7 +53,7 @@
 
 (s/fdef create-collaborator
         :args (s/cat :email string?
-                     :type #{"investment" "community-partnership" "other" "move-in"}
+                     :type #{"move-in" "invest" "vendor" "location-ideas" "other"}
                      :message string?)
         :ret map?)
 
